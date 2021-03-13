@@ -1,4 +1,5 @@
 import './App.css';
+import MusicTable from './musicTable/MusicTable';
 
 function App() {
   return (
@@ -8,6 +9,7 @@ function App() {
         <p>
           poggers
         </p>
+        <MusicTable/>
       </header>
     </div>
   );
