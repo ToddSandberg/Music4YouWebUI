@@ -1,20 +1,28 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import TableCell from '@material-ui/core/TableCell';
 import TextField from '@material-ui/core/TextField';
 import { peopleColors, ratingColors } from '../constants/colorConstants';
 
-function RatingCell({ score, owner }) {
-    const [ currentScore, setCurrentScore ] = useState(score);
+function RatingCell({ score, owner, updateRating, songName }) {
+    const color = score ? ratingColors[parseFloat(score)] : peopleColors[owner];
 
-    const color = currentScore ? ratingColors[currentScore] : peopleColors[owner];
+    const setScore = (value)=> {
+        if (isValidScore(value)) {
+            updateRating(songName,owner,value);
+        }
+    }
+
+    const isValidScore = (score)=>{
+        return score === "" || (score > 0 && score <= 5 && score%0.5 === 0);
+    }
 
     return(
-        <TableCell style={{backgroundColor:color}}>
+        <TableCell key={songName + "-" + owner + "-field"} style={{backgroundColor:color}}>
             <TextField 
-                id="standard-basic" 
+                key={songName + "-" + owner + "-rating"}
                 style={{width:'20px'}}
-                value={currentScore}
-                onChange={(event) => setCurrentScore(event.target.value)}
+                value={score}
+                onChange={(event) => setScore(event.target.value)}
             />
         </TableCell>
     );

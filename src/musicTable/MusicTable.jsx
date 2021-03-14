@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -12,9 +12,37 @@ import MusicRow from './MusicRow';
 import { mockSongs } from '../mocks/songs';
 import { peopleColors } from '../constants/colorConstants';
 import { names } from '../constants/userConstants';
+import SortingDropdown from './SortingDropdown';
 
 function MusicTable() {
-    const currentSongs = mockSongs['2020-01-20'].songs; //TODO: get current week somehow
+    let [currentSongs, setCurrentSongs] = useState(mockSongs['2020-01-20'].songs);
+
+    const updateRating = (songName, songRater, value) => {
+        let newSongs = [...currentSongs];
+        for (let song of newSongs) {
+            if (song.name===songName) {
+                song["ratings"][songRater] = value;
+                break;
+            }
+        }
+        setCurrentSongs(newSongs);
+    }
+
+    const sortSongsName=(factor)=> {
+        let newSongs = [...currentSongs];
+        newSongs.sort((a,b)=> {
+            if (a.name > b.name) {return factor * 1}
+            if (a.name < b.name) {return factor * -1}
+            return 0;
+        });
+        setCurrentSongs(newSongs);
+    };
+    
+    const sortSongs = (options)=> {
+        const { type } = options;
+        if (type==="name-alphabetical") sortSongsName(1);
+        if (type==="name-alphabetical-reverse") sortSongsName(-1);
+    }
 
     return (
     <Card>
@@ -26,9 +54,10 @@ function MusicTable() {
         <Table aria-label="simple table">
             <TableHead>
                 <TableRow>
-                    <TableCell>Song Names</TableCell>
+                    <TableCell style={{width: '250px', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>Songs <SortingDropdown sortSongs={sortSongs}/></TableCell>
                     {names.map(name => 
                         <TableCell 
+                            key={name}
                             component="th"
                             style={{backgroundColor:peopleColors[name.toLowerCase()]}}
                         >
@@ -39,7 +68,7 @@ function MusicTable() {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {currentSongs.map(song => <MusicRow song={song}/>)}
+                {currentSongs.map(song => <MusicRow key={song.name} updateRating={updateRating} song={song}/>)}
             </TableBody>
         </Table>
         </TableContainer>
