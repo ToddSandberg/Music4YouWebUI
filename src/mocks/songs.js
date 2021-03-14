@@ -26,6 +26,32 @@ export const mockSongs = {
               'emma': 1,
               'tanner': 1
           }
+        },
+        {
+          'name': 'this is alex song',
+          'owner': 'alex',
+          'ratings': {
+              'todd': 1,
+              'taylor': 5,
+              'alex': 1,
+              'sneh': 1,
+              'grant': 1,
+              'emma': 1,
+              'tanner': 1
+          }
+        },
+        {
+          'name': 'this is sneh song',
+          'owner': 'sneh',
+          'ratings': {
+              'todd': 1,
+              'taylor': 5,
+              'alex': 1,
+              'sneh': 1,
+              'grant': 1,
+              'emma': 1,
+              'tanner': 1
+          }
         }
       ]
    }

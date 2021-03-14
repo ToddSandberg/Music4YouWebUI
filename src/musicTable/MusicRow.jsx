@@ -5,6 +5,10 @@ import React from 'react';
 import RatingCell from './RatingCell';
 import { peopleColors } from '../constants/colorConstants';
 
+function sumRatings(ratings) {
+    return Object.values(ratings).reduce((a, b) => a + b, 0);
+}
+
 function MusicRow ({ song }) {
     const ratings = song.ratings;
     const owner = song.owner;
@@ -24,6 +28,7 @@ function MusicRow ({ song }) {
             <RatingCell score={ratings.grant} />
             <RatingCell score={ratings.emma} />
             <RatingCell score={ratings.tanner} />
+            <TableCell>{sumRatings(ratings)}</TableCell>
         </TableRow>
     );
 }

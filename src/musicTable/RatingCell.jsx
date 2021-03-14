@@ -4,7 +4,6 @@ import TextField from '@material-ui/core/TextField';
 import { ratingColors } from '../constants/colorConstants';
 
 function RatingCell({ score }) {
-    console.log(score);
     const [ currentScore, setCurrentScore ] = useState(score);
 
     return(

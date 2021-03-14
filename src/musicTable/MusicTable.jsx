@@ -32,6 +32,7 @@ function MusicTable() {
                     <TableCell>Grant</TableCell>
                     <TableCell>Emma</TableCell>
                     <TableCell>Tanner</TableCell>
+                    <TableCell>Total</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
