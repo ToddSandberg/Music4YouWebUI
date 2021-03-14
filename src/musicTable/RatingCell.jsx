@@ -1,13 +1,15 @@
 import React, {useState} from 'react';
 import TableCell from '@material-ui/core/TableCell';
 import TextField from '@material-ui/core/TextField';
-import { ratingColors } from '../constants/colorConstants';
+import { peopleColors, ratingColors } from '../constants/colorConstants';
 
-function RatingCell({ score }) {
+function RatingCell({ score, owner }) {
     const [ currentScore, setCurrentScore ] = useState(score);
 
+    const color = currentScore ? ratingColors[currentScore] : peopleColors[owner];
+
     return(
-        <TableCell style={{backgroundColor:ratingColors[currentScore]}}>
+        <TableCell style={{backgroundColor:color}}>
             <TextField 
                 id="standard-basic" 
                 style={{width:'20px'}}

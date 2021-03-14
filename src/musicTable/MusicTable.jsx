@@ -10,9 +10,11 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import MusicRow from './MusicRow';
 import { mockSongs } from '../mocks/songs';
+import { peopleColors } from '../constants/colorConstants';
+import { names } from '../constants/userConstants';
 
 function MusicTable() {
-    const currentSongs = mockSongs['2020-01-20'].songs;
+    const currentSongs = mockSongs['2020-01-20'].songs; //TODO: get current week somehow
 
     return (
     <Card>
@@ -25,13 +27,14 @@ function MusicTable() {
             <TableHead>
                 <TableRow>
                     <TableCell>Song Names</TableCell>
-                    <TableCell>Todd</TableCell>
-                    <TableCell>Tayro</TableCell>
-                    <TableCell>Alex</TableCell>
-                    <TableCell>Sneh</TableCell>
-                    <TableCell>Grant</TableCell>
-                    <TableCell>Emma</TableCell>
-                    <TableCell>Tanner</TableCell>
+                    {names.map(name => 
+                        <TableCell 
+                            component="th"
+                            style={{backgroundColor:peopleColors[name.toLowerCase()]}}
+                        >
+                            {name}
+                        </TableCell>
+                    )}
                     <TableCell>Total</TableCell>
                 </TableRow>
             </TableHead>
