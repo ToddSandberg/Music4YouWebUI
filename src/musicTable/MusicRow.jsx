@@ -1,7 +1,7 @@
 
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
-import React, { useState } from 'react';
+import React from 'react';
 import RatingCell from './RatingCell';
 import { peopleColors } from '../constants/colorConstants';
 import { names } from '../constants/userConstants';

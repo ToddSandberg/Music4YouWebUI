@@ -8,13 +8,22 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
+import { withStyles } from '@material-ui/core/styles';
 import MusicRow from './MusicRow';
 import { mockSongs } from '../mocks/songs';
 import { peopleColors } from '../constants/colorConstants';
 import { names } from '../constants/userConstants';
 import SortingDropdown from './SortingDropdown';
 
-function MusicTable() {
+const useStyles = theme => ({
+    mainCardContainer: {width: "75%"},
+    cellHeaderContainer: {display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'},
+    cellHeaderText: {marginRight: '20px'},
+    cellCustom: {padding: '6px'},
+});
+
+
+function MusicTable({ classes }) {
     let [currentSongs, setCurrentSongs] = useState(mockSongs['2020-01-20'].songs);
 
     const updateRating = (songName, songRater, value) => {
@@ -28,24 +37,28 @@ function MusicTable() {
         setCurrentSongs(newSongs);
     }
 
-    const sortSongsName=(factor)=> {
+    const sortSongs=({ type, factor, field })=> {
+        console.log(type, factor, field);
         let newSongs = [...currentSongs];
-        newSongs.sort((a,b)=> {
-            if (a.name > b.name) {return factor * 1}
-            if (a.name < b.name) {return factor * -1}
-            return 0;
-        });
+        if (!type.includes("numerical")) {
+            newSongs.sort((a,b)=> {
+                if (a[field] > b[field]) {return factor * 1}
+                if (a[field] < b[field]) {return factor * -1}
+                return 0;
+            });
+        }
+        else {
+            newSongs.sort((a,b)=> {
+                if (a["ratings"][field] > b["ratings"][field]) {return factor * 1}
+                if (a["ratings"][field] < b["ratings"][field]) {return factor * -1}
+                return 0;
+            });
+        }
         setCurrentSongs(newSongs);
     };
-    
-    const sortSongs = (options)=> {
-        const { type } = options;
-        if (type==="name-alphabetical") sortSongsName(1);
-        if (type==="name-alphabetical-reverse") sortSongsName(-1);
-    }
 
     return (
-    <Card>
+    <Card className={classes.mainCardContainer}>
         <CardContent>
         <Typography variant="h2" component="h2">
             Music For You
@@ -54,14 +67,14 @@ function MusicTable() {
         <Table aria-label="simple table">
             <TableHead>
                 <TableRow>
-                    <TableCell style={{width: '250px', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>Songs <SortingDropdown sortSongs={sortSongs}/></TableCell>
+                    <TableCell><span className={classes.cellHeaderContainer}><span className={classes.cellHeaderText}>Songs</span><SortingDropdown sortSongs={sortSongs} owner={null}/></span></TableCell>
                     {names.map(name => 
                         <TableCell 
                             key={name}
                             component="th"
                             style={{backgroundColor:peopleColors[name.toLowerCase()]}}
                         >
-                            {name}
+                            <span className={classes.cellHeaderContainer}><span className={classes.cellHeaderText}>{name}</span><SortingDropdown sortSongs={sortSongs} owner={name.toLowerCase()}/></span>
                         </TableCell>
                     )}
                     <TableCell>Total</TableCell>
@@ -77,4 +90,4 @@ function MusicTable() {
     );
 }
 
-export default MusicTable;
+export default withStyles(useStyles)(MusicTable);

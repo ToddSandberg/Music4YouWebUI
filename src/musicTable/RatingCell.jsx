@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import TableCell from '@material-ui/core/TableCell';
 import TextField from '@material-ui/core/TextField';
 import { peopleColors, ratingColors } from '../constants/colorConstants';
