@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -13,9 +13,24 @@ import { mockSongs } from '../mocks/songs';
 import { peopleColors } from '../constants/colorConstants';
 import { names } from '../constants/userConstants';
 import SortingDropdown from './SortingDropdown';
+import { getSongs, saveSongs } from '../apis/songsAPI';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 function MusicTable() {
-    let [currentSongs, setCurrentSongs] = useState(mockSongs['2020-01-20'].songs);
+    const [ isLoading, setIsLoading ] = useState(true);
+    const [ currentSongs, setCurrentSongs ] = useState({});
+
+    useEffect(() => {
+        getSongs().then((response) => {
+            setCurrentSongs(response.data.songs['2020-01-20'].songs); //TODO get actual week
+            setIsLoading(false);
+        })
+        .catch((response) => {
+            console.error('Error getting songs, using mocks'); //TODO handle error response
+            setCurrentSongs(mockSongs['2020-01-20'].songs); //TODO get actual week
+            setIsLoading(false);
+        })
+    }, []);
 
     const updateRating = (songName, songRater, value) => {
         let newSongs = [...currentSongs];
@@ -25,10 +40,17 @@ function MusicTable() {
                 break;
             }
         }
-        setCurrentSongs(newSongs);
-    }
 
-    const sortSongsName=(factor)=> {
+        console.log(newSongs);
+        saveSongs({
+            '2020-01-20': { //TODO get actual week
+                'songs': newSongs
+            }
+        });
+        setCurrentSongs(newSongs);
+    };
+
+    const sortSongsName = useCallback((factor)=> {
         let newSongs = [...currentSongs];
         newSongs.sort((a,b)=> {
             if (a.name > b.name) {return factor * 1}
@@ -36,12 +58,16 @@ function MusicTable() {
             return 0;
         });
         setCurrentSongs(newSongs);
-    };
+    }, [currentSongs, setCurrentSongs]);
     
-    const sortSongs = (options)=> {
+    const sortSongs = useCallback((options)=> {
         const { type } = options;
         if (type==="name-alphabetical") sortSongsName(1);
         if (type==="name-alphabetical-reverse") sortSongsName(-1);
+    }, [sortSongsName]);
+
+    if (isLoading) {
+        return <CircularProgress />;
     }
 
     return (
