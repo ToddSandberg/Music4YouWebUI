@@ -49,8 +49,6 @@ function MusicTable({ classes }) {
                 break;
             }
         }
-
-        console.log(newSongs);
         saveSongs({
             '2020-01-20': { //TODO get actual week
                 'songs': newSongs
@@ -60,7 +58,6 @@ function MusicTable({ classes }) {
     };
 
     const sortSongs=({ type, factor, field })=> {
-        console.log(type, factor, field);
         let newSongs = [...currentSongs];
         if (!type.includes("numerical")) {
             newSongs.sort((a,b)=> {
