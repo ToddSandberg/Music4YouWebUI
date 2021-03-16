@@ -5,10 +5,8 @@ import React from 'react';
 import RatingCell from './RatingCell';
 import { peopleColors } from '../constants/colorConstants';
 import { names } from '../constants/userConstants';
+import { getGridNumericColumnOperators } from '@material-ui/data-grid';
 
-function sumRatings(ratings) {
-    return Object.values(ratings).reduce((a, b) => isNaN(parseFloat(b)) ? 0 + a: parseFloat(b) + a, 0);
-}
 
 function MusicRow ({ song, updateRating }) {
     const { ratings, owner } = song;
@@ -25,7 +23,7 @@ function MusicRow ({ song, updateRating }) {
             {names.map((name,idx) => 
                     <RatingCell key={name + idx} score={ratings[name.toLowerCase()]} owner={name.toLowerCase()} songName={song.name} updateRating={updateRating}/>
             )}
-            <TableCell key={song.name + "-rating"}>{sumRatings(ratings)}</TableCell>
+            <TableCell key={song.name + "-rating"} style={{backgroundColor: "#" + song.color}}>{song.score}</TableCell>
         </TableRow>
     );
 }

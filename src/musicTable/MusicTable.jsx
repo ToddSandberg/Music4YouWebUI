@@ -16,6 +16,8 @@ import { names } from '../constants/userConstants';
 import SortingDropdown from './SortingDropdown';
 import { getSongs, saveSongs } from '../apis/songsAPI';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Rainbow from 'rainbowvis.js';
+
 
 const useStyles = theme => ({
     mainCardContainer: {width: "75%"},
@@ -24,21 +26,59 @@ const useStyles = theme => ({
     cellCustom: {padding: '6px'},
 });
 
+function sumRatings(ratings) {
+    return Object.values(ratings).reduce((a, b) => isNaN(parseFloat(b)) ? 0 + a: parseFloat(b) + a, 0);
+}
+let ratingsRange = {'min': undefined, 'max': undefined};
+const rainbowRed = new Rainbow();
+const rainbowGreen = new Rainbow();
+rainbowRed.setSpectrum('#E06666', '#FFD666');
+rainbowGreen.setSpectrum('#FFD666', '#34A853');
+
+const initializeRainbows = () => {
+    const min = ratingsRange.min;
+    const max = ratingsRange.max;
+    rainbowRed.setNumberRange(min, (max+min)/2); 
+    rainbowGreen.setNumberRange((max+min)/2, max);
+}
+
+const getColor = (num) => {
+    return num <= (ratingsRange.max+ratingsRange.min)/2 ? rainbowRed.colourAt(num) : rainbowGreen.colourAt(num);
+}
+
 
 function MusicTable({ classes }) {
     const [ isLoading, setIsLoading ] = useState(true);
     const [ currentSongs, setCurrentSongs ] = useState([]);
 
+    const generateColors = (songs) => {
+        if (songs === undefined || songs.length === 0) {return}
+        ratingsRange.max = undefined;
+        ratingsRange.min = undefined;
+        for (let song of songs) {
+            if (ratingsRange.max === undefined || song.score > ratingsRange.max) {ratingsRange.max = song.score}
+            if (ratingsRange.min === undefined || song.score < ratingsRange.min) {ratingsRange.min = song.score}
+        }
+        initializeRainbows();
+        for (let song of songs) {
+            song['color'] = getColor(song.score);
+        }
+    }
+
     useEffect(() => {
         getSongs().then((response) => {
-            setCurrentSongs(response.data.songs['2020-01-20'].songs); //TODO get actual week
+            const songs = response.data.songs['2020-01-20'].songs;
+            generateColors(songs);
+            setCurrentSongs(songs); //TODO get actual week
             setIsLoading(false);
         })
         .catch((response) => {
             console.error('Error getting songs, using mocks'); //TODO handle error response
-            setCurrentSongs(mockSongs['2020-01-20'].songs); //TODO get actual week
+            const songs = mockSongs['2020-01-20'].songs;
+            generateColors(songs);
+            setCurrentSongs(songs); //TODO get actual week
             setIsLoading(false);
-        })
+        });
     }, []);
 
     const updateRating = (songName, songRater, value) => {
@@ -46,6 +86,7 @@ function MusicTable({ classes }) {
         for (let song of newSongs) {
             if (song.name===songName) {
                 song["ratings"][songRater] = value;
+                song['score'] = sumRatings(song['ratings']);
                 break;
             }
         }
@@ -54,6 +95,7 @@ function MusicTable({ classes }) {
                 'songs': newSongs
             }
         });
+        generateColors(newSongs);
         setCurrentSongs(newSongs);
     };
 
@@ -67,11 +109,20 @@ function MusicTable({ classes }) {
             });
         }
         else {
-            newSongs.sort((a,b)=> {
-                if (a["ratings"][field] > b["ratings"][field]) {return factor * 1}
-                if (a["ratings"][field] < b["ratings"][field]) {return factor * -1}
-                return 0;
-            });
+            if (field === 'total') {
+                newSongs.sort((a,b)=> {
+                    if (a['score'] > b['score']) {return factor * 1}
+                    if (a['score'] < b['score']) {return factor * -1}
+                    return 0;
+                });
+            }
+            else {
+                newSongs.sort((a,b)=> {
+                    if (a["ratings"][field] > b["ratings"][field]) {return factor * 1}
+                    if (a["ratings"][field] < b["ratings"][field]) {return factor * -1}
+                    return 0;
+                });
+            }
         }
         setCurrentSongs(newSongs);
     };
@@ -96,7 +147,7 @@ function MusicTable({ classes }) {
                             <span className={classes.cellHeaderContainer}><span className={classes.cellHeaderText}>{name}</span><SortingDropdown sortSongs={sortSongs} owner={name.toLowerCase()}/></span>
                         </TableCell>
                     )}
-                    <TableCell>Total</TableCell>
+                    <TableCell style={{backgroundColor: "#fbbc04"}}><span className={classes.cellHeaderContainer}><span className={classes.cellHeaderText}>Total</span><SortingDropdown sortSongs={sortSongs} owner={'total'}/></span></TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
