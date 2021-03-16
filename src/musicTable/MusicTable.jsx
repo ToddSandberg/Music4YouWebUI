@@ -56,6 +56,7 @@ function MusicTable({ classes }) {
         ratingsRange.max = undefined;
         ratingsRange.min = undefined;
         for (let song of songs) {
+            song['score'] = sumRatings(song.ratings);
             if (ratingsRange.max === undefined || song.score > ratingsRange.max) {ratingsRange.max = song.score}
             if (ratingsRange.min === undefined || song.score < ratingsRange.min) {ratingsRange.min = song.score}
         }

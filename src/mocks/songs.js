@@ -16,8 +16,7 @@ export const mockSongs = {
               'grant': 1,
               'emma': 5,
               'tanner': 5
-          },
-          'score': 25,
+          }
         },
         {
           'name': 'this is taylors song',
@@ -31,8 +30,7 @@ export const mockSongs = {
               'grant': 1,
               'emma': 1,
               'tanner': 1
-          },
-          'score': 11,
+          }
         },
         {
           'name': 'this is alex song',
@@ -46,8 +44,7 @@ export const mockSongs = {
               'grant': 1,
               'emma': 1,
               'tanner': 1
-          },
-          'score': 11,
+          }
         },
         {
           'name': 'this is sneh song',
@@ -61,8 +58,7 @@ export const mockSongs = {
               'grant': 1,
               'emma': 1,
               'tanner': 1
-          },
-          'score': 11,
+          }
         }
       ]
    }
