@@ -8,7 +8,7 @@ export const ratingColors = {
     2.0: '#EF9E66',
     1.5: '#E78266',
     1.0: '#E06666'
-}
+};
 
 export const peopleColors = {
     'todd': '#93c47d',
@@ -18,4 +18,4 @@ export const peopleColors = {
     'grant': '#ffff00',
     'emma': '#ff77ba',
     'tanner': '#fc35e2',
-}
+};

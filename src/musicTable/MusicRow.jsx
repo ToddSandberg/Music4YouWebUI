@@ -5,7 +5,6 @@ import React from 'react';
 import RatingCell from './RatingCell';
 import { peopleColors } from '../constants/colorConstants';
 import { names } from '../constants/userConstants';
-import { getGridNumericColumnOperators } from '@material-ui/data-grid';
 
 
 function MusicRow ({ song, updateRating }) {
@@ -21,9 +20,9 @@ function MusicRow ({ song, updateRating }) {
                 {song.name}
             </TableCell>
             {names.map((name,idx) => 
-                    <RatingCell key={name + idx} score={ratings[name.toLowerCase()]} owner={name.toLowerCase()} songName={song.name} updateRating={updateRating}/>
+                <RatingCell key={name + idx} score={ratings[name.toLowerCase()]} owner={name.toLowerCase()} songName={song.name} updateRating={updateRating}/>
             )}
-            <TableCell key={song.name + "-rating"} style={{backgroundColor: "#" + song.color}}>{song.score}</TableCell>
+            <TableCell key={song.name + '-rating'} style={{backgroundColor: '#' + song.color}}>{song.score}</TableCell>
         </TableRow>
     );
 }

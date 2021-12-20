@@ -6,4 +6,4 @@ export const names = [
     'Grant',
     'Emma',
     'Tanner',
-]
+];

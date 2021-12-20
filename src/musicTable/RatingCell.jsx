@@ -10,16 +10,16 @@ function RatingCell({ score, owner, updateRating, songName }) {
         if (isValidScore(value)) {
             updateRating(songName,owner,value);
         }
-    }
+    };
 
     const isValidScore = (score)=>{
-        return score === "" || (score > 0 && score <= 5 && score%0.5 === 0);
-    }
+        return score === '' || (score > 0 && score <= 5 && score%0.5 === 0);
+    };
 
     return(
-        <TableCell key={songName + "-" + owner + "-field"} style={{backgroundColor:color}}>
+        <TableCell key={songName + '-' + owner + '-field'} style={{backgroundColor:color}}>
             <TextField 
-                key={songName + "-" + owner + "-rating"}
+                key={songName + '-' + owner + '-rating'}
                 style={{width:'20px'}}
                 value={score}
                 onChange={(event) => setScore(event.target.value)}

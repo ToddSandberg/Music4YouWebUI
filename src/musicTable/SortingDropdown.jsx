@@ -8,12 +8,12 @@ function SortingDropdown({ sortSongs, owner }) {
 
             {owner === null ? 
                 <Dropdown.Menu align="right">
-                    <Dropdown.Item onClick={()=>sortSongs({type: 'name-alphabetical', factor: 1, field: "name"})}>Sort A-Z</Dropdown.Item>
-                    <Dropdown.Item onClick={()=>sortSongs({type: 'name-alphabetical-reverse', factor: -1, field: "name"})}>Sort Z-A</Dropdown.Item>
-                    <Dropdown.Item onClick={()=>sortSongs({type: 'owner-alphabetical', factor: 1, field: "owner"})}>Sort by Song Owner</Dropdown.Item>
-                    <Dropdown.Item onClick={()=>sortSongs({type: 'owner-alphabetical-reverse', factor: -1, field: "owner"})}>Sort by Song Owner Reverse</Dropdown.Item>
-                    <Dropdown.Item onClick={()=>sortSongs({type: 'date-added-old', factor: 1, field: "date"})}>Sort by New</Dropdown.Item>
-                    <Dropdown.Item onClick={()=>sortSongs({type: 'date-added-new', factor: -1, field: "date"})}>Sort by Old</Dropdown.Item>
+                    <Dropdown.Item onClick={()=>sortSongs({type: 'name-alphabetical', factor: 1, field: 'name'})}>Sort A-Z</Dropdown.Item>
+                    <Dropdown.Item onClick={()=>sortSongs({type: 'name-alphabetical-reverse', factor: -1, field: 'name'})}>Sort Z-A</Dropdown.Item>
+                    <Dropdown.Item onClick={()=>sortSongs({type: 'owner-alphabetical', factor: 1, field: 'owner'})}>Sort by Song Owner</Dropdown.Item>
+                    <Dropdown.Item onClick={()=>sortSongs({type: 'owner-alphabetical-reverse', factor: -1, field: 'owner'})}>Sort by Song Owner Reverse</Dropdown.Item>
+                    <Dropdown.Item onClick={()=>sortSongs({type: 'date-added-old', factor: 1, field: 'date'})}>Sort by New</Dropdown.Item>
+                    <Dropdown.Item onClick={()=>sortSongs({type: 'date-added-new', factor: -1, field: 'date'})}>Sort by Old</Dropdown.Item>
                 </Dropdown.Menu>
                 :
                 <Dropdown.Menu align="right">

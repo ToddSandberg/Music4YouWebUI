@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -15,12 +15,13 @@ import { peopleColors } from '../constants/colorConstants';
 import { names } from '../constants/userConstants';
 import SortingDropdown from './SortingDropdown';
 import { getSongs, saveSongs } from '../apis/songsAPI';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Rainbow from 'rainbowvis.js';
+import { CircularProgress } from '@material-ui/core';
+import { useCallback } from 'react';
 
 
-const useStyles = theme => ({
-    mainCardContainer: {width: "75%"},
+const useStyles = () => ({
+    mainCardContainer: {width: '75%'},
     cellHeaderContainer: {display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'},
     cellHeaderText: {marginRight: '20px'},
     cellCustom: {padding: '6px'},
@@ -40,11 +41,11 @@ const initializeRainbows = () => {
     const max = ratingsRange.max;
     rainbowRed.setNumberRange(min, (max+min)/2); 
     rainbowGreen.setNumberRange((max+min)/2, max);
-}
+};
 
 const getColor = (num) => {
     return num <= (ratingsRange.max+ratingsRange.min)/2 ? rainbowRed.colourAt(num) : rainbowGreen.colourAt(num);
-}
+};
 
 
 function MusicTable({ classes }) {
@@ -52,19 +53,19 @@ function MusicTable({ classes }) {
     const [ currentSongs, setCurrentSongs ] = useState([]);
 
     const generateColors = (songs) => {
-        if (songs === undefined || songs.length === 0) {return}
+        if (songs === undefined || songs.length === 0) {return;}
         ratingsRange.max = undefined;
         ratingsRange.min = undefined;
         for (let song of songs) {
             song['score'] = sumRatings(song.ratings);
-            if (ratingsRange.max === undefined || song.score > ratingsRange.max) {ratingsRange.max = song.score}
-            if (ratingsRange.min === undefined || song.score < ratingsRange.min) {ratingsRange.min = song.score}
+            if (ratingsRange.max === undefined || song.score > ratingsRange.max) {ratingsRange.max = song.score;}
+            if (ratingsRange.min === undefined || song.score < ratingsRange.min) {ratingsRange.min = song.score;}
         }
         initializeRainbows();
         for (let song of songs) {
             song['color'] = getColor(song.score);
         }
-    }
+    };
 
     useEffect(() => {
         getSongs().then((response) => {
@@ -73,20 +74,20 @@ function MusicTable({ classes }) {
             setCurrentSongs(songs); //TODO get actual week
             setIsLoading(false);
         })
-        .catch((response) => {
-            console.error('Error getting songs, using mocks'); //TODO handle error response
-            const songs = mockSongs['2020-01-20'].songs;
-            generateColors(songs);
-            setCurrentSongs(songs); //TODO get actual week
-            setIsLoading(false);
-        });
+            .catch(() => {
+                console.error('Error getting songs, using mocks'); //TODO handle error response
+                const songs = mockSongs['2020-01-20'].songs;
+                generateColors(songs);
+                setCurrentSongs(songs); //TODO get actual week
+                setIsLoading(false);
+            });
     }, []);
 
-    const updateRating = (songName, songRater, value) => {
+    const updateRating = useCallback((songName, songRater, value) => {
         let newSongs = [...currentSongs];
         for (let song of newSongs) {
             if (song.name===songName) {
-                song["ratings"][songRater] = value;
+                song['ratings'][songRater] = value;
                 song['score'] = sumRatings(song['ratings']);
                 break;
             }
@@ -98,66 +99,70 @@ function MusicTable({ classes }) {
         });
         generateColors(newSongs);
         setCurrentSongs(newSongs);
-    };
+    }, [generateColors, setCurrentSongs, currentSongs, sumRatings, saveSongs]);
 
-    const sortSongs=({ type, factor, field })=> {
+    const sortSongs = useCallback(({ type, factor, field })=> {
         let newSongs = [...currentSongs];
-        if (!type.includes("numerical")) {
+        if (!type.includes('numerical')) {
             newSongs.sort((a,b)=> {
-                if (a[field] > b[field]) {return factor * 1}
-                if (a[field] < b[field]) {return factor * -1}
+                if (a[field] > b[field]) {return factor * 1;}
+                if (a[field] < b[field]) {return factor * -1;}
                 return 0;
             });
         }
         else {
             if (field === 'total') {
                 newSongs.sort((a,b)=> {
-                    if (a['score'] > b['score']) {return factor * 1}
-                    if (a['score'] < b['score']) {return factor * -1}
+                    if (a['score'] > b['score']) {return factor * 1;}
+                    if (a['score'] < b['score']) {return factor * -1;}
                     return 0;
                 });
             }
             else {
                 newSongs.sort((a,b)=> {
-                    if (a["ratings"][field] > b["ratings"][field]) {return factor * 1}
-                    if (a["ratings"][field] < b["ratings"][field]) {return factor * -1}
+                    if (a['ratings'][field] > b['ratings'][field]) {return factor * 1;}
+                    if (a['ratings'][field] < b['ratings'][field]) {return factor * -1;}
                     return 0;
                 });
             }
         }
         setCurrentSongs(newSongs);
-    };
+    }, [currentSongs, setCurrentSongs]);
+
+    if (isLoading) {
+        return <CircularProgress />;
+    }
 
     return (
-    <Card className={classes.mainCardContainer}>
-        <CardContent>
-        <Typography variant="h2" component="h2">
-            Music For You
-        </Typography>
-        <TableContainer>
-        <Table aria-label="simple table">
-            <TableHead>
-                <TableRow>
-                    <TableCell><span className={classes.cellHeaderContainer}><span className={classes.cellHeaderText}>Songs</span><SortingDropdown sortSongs={sortSongs} owner={null}/></span></TableCell>
-                    {names.map(name => 
-                        <TableCell 
-                            key={name}
-                            component="th"
-                            style={{backgroundColor:peopleColors[name.toLowerCase()]}}
-                        >
-                            <span className={classes.cellHeaderContainer}><span className={classes.cellHeaderText}>{name}</span><SortingDropdown sortSongs={sortSongs} owner={name.toLowerCase()}/></span>
-                        </TableCell>
-                    )}
-                    <TableCell style={{backgroundColor: "#fbbc04"}}><span className={classes.cellHeaderContainer}><span className={classes.cellHeaderText}>Total</span><SortingDropdown sortSongs={sortSongs} owner={'total'}/></span></TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {currentSongs.map(song => <MusicRow key={song.name} updateRating={updateRating} song={song}/>)}
-            </TableBody>
-        </Table>
-        </TableContainer>
-        </CardContent>
-    </Card>
+        <Card className={classes.mainCardContainer}>
+            <CardContent>
+                <Typography variant="h2" component="h2">
+                    Music For You
+                </Typography>
+                <TableContainer>
+                    <Table aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell><span className={classes.cellHeaderContainer}><span className={classes.cellHeaderText}>Songs</span><SortingDropdown sortSongs={sortSongs} owner={null}/></span></TableCell>
+                                {names.map(name => 
+                                    <TableCell 
+                                        key={name}
+                                        component="th"
+                                        style={{backgroundColor:peopleColors[name.toLowerCase()]}}
+                                    >
+                                        <span className={classes.cellHeaderContainer}><span className={classes.cellHeaderText}>{name}</span><SortingDropdown sortSongs={sortSongs} owner={name.toLowerCase()}/></span>
+                                    </TableCell>
+                                )}
+                                <TableCell style={{backgroundColor: '#fbbc04'}}><span className={classes.cellHeaderContainer}><span className={classes.cellHeaderText}>Total</span><SortingDropdown sortSongs={sortSongs} owner={'total'}/></span></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {currentSongs.map(song => <MusicRow key={song.name} updateRating={updateRating} song={song}/>)}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </CardContent>
+        </Card>
     );
 }
 
