@@ -1,6 +1,8 @@
 const APIPaths = {
     saveSongs: 'saveSongs',
-    getSongs: 'getSongs'
+    getSongs: 'getSongs',
+    login: 'login',
+    createAccount: 'createAccount',
 };
 
 export default APIPaths;
