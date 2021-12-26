@@ -15,7 +15,7 @@ function MusicRow ({ song, updateRating }) {
             <TableCell 
                 key={song.name}
                 component="th"
-                style={{backgroundColor:peopleColors[owner]}}
+                style={{backgroundColor:peopleColors[owner.toLowerCase()]}}
             >
                 {song.name}
             </TableCell>

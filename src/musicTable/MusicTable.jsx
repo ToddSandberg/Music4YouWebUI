@@ -16,8 +16,9 @@ import { names } from '../constants/userConstants';
 import SortingDropdown from './SortingDropdown';
 import { getSongs, saveSongs } from '../apis/songsAPI';
 import Rainbow from 'rainbowvis.js';
-import { CircularProgress } from '@material-ui/core';
+import { Button, CircularProgress } from '@material-ui/core';
 import { useCallback } from 'react';
+import AddSongDialog from './AddSongDialog';
 
 
 const useStyles = () => ({
@@ -51,6 +52,7 @@ const getColor = (num) => {
 function MusicTable({ classes }) {
     const [ isLoading, setIsLoading ] = useState(true);
     const [ currentSongs, setCurrentSongs ] = useState([]);
+    const [ addSongModalOpen, setAddSongModalOpen ] = useState(false);
 
     const generateColors = (songs) => {
         if (songs === undefined || songs.length === 0) {return;}
@@ -129,40 +131,82 @@ function MusicTable({ classes }) {
         setCurrentSongs(newSongs);
     }, [currentSongs, setCurrentSongs]);
 
+    const addSong = useCallback((name, owner) => {
+        const newSongs = [...currentSongs];
+        const ratings = names.reduce((ratings, name) => ({ ...ratings, [name]: 0 }, {}));
+        newSongs.push({
+            name,
+            owner,
+            date: new Date(),
+            ratings
+        });
+        setCurrentSongs(newSongs);
+        saveSongs({
+            '2020-01-20': { //TODO get actual week
+                'songs': newSongs
+            }
+        }).then(() => {
+            console.log('succesfully saved new songs');
+        })
+            .catch(() => {
+                console.error('Error getting songs, using mocks'); //TODO handle error response
+            });
+    }, [currentSongs, setCurrentSongs]);
+
     if (isLoading) {
         return <CircularProgress />;
     }
 
     return (
-        <Card className={classes.mainCardContainer}>
-            <CardContent>
-                <Typography variant="h2" component="h2">
+        <>
+            <AddSongDialog
+                isOpen={addSongModalOpen}
+                handleClose={() => setAddSongModalOpen(false)}
+                addSong={addSong}
+            />
+            <Card className={classes.mainCardContainer}>
+                <CardContent>
+                    <Typography variant="h2" component="h2">
                     Music For You
-                </Typography>
-                <TableContainer>
-                    <Table aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell><span className={classes.cellHeaderContainer}><span className={classes.cellHeaderText}>Songs</span><SortingDropdown sortSongs={sortSongs} owner={null}/></span></TableCell>
-                                {names.map(name => 
-                                    <TableCell 
-                                        key={name}
-                                        component="th"
-                                        style={{backgroundColor:peopleColors[name.toLowerCase()]}}
-                                    >
-                                        <span className={classes.cellHeaderContainer}><span className={classes.cellHeaderText}>{name}</span><SortingDropdown sortSongs={sortSongs} owner={name.toLowerCase()}/></span>
+                    </Typography>
+                    <TableContainer>
+                        <Table aria-label="simple table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell><span className={classes.cellHeaderContainer}><span className={classes.cellHeaderText}>Songs</span><SortingDropdown sortSongs={sortSongs} owner={null}/></span></TableCell>
+                                    {names.map(name => 
+                                        <TableCell 
+                                            key={name}
+                                            component="th"
+                                            style={{backgroundColor:peopleColors[name.toLowerCase()]}}
+                                        >
+                                            <span className={classes.cellHeaderContainer}>
+                                                <span className={classes.cellHeaderText}>{name}</span>
+                                                <SortingDropdown sortSongs={sortSongs} owner={name.toLowerCase()}/>
+                                            </span>
+                                        </TableCell>
+                                    )}
+                                    <TableCell style={{backgroundColor: '#fbbc04'}}>
+                                        <span className={classes.cellHeaderContainer}>
+                                            <span className={classes.cellHeaderText}>Total</span>
+                                            <SortingDropdown sortSongs={sortSongs} owner={'total'}/>
+                                        </span>
                                     </TableCell>
-                                )}
-                                <TableCell style={{backgroundColor: '#fbbc04'}}><span className={classes.cellHeaderContainer}><span className={classes.cellHeaderText}>Total</span><SortingDropdown sortSongs={sortSongs} owner={'total'}/></span></TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {currentSongs.map(song => <MusicRow key={song.name} updateRating={updateRating} song={song}/>)}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </CardContent>
-        </Card>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {currentSongs.map(song => <MusicRow key={song.name} updateRating={updateRating} song={song}/>)}
+                                <TableRow>
+                                    <TableCell>
+                                        <Button onClick={() => setAddSongModalOpen(true)}>+</Button>
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </CardContent>
+            </Card>
+        </>
     );
 }
 
