@@ -133,13 +133,30 @@ function MusicTable({ classes }) {
 
     const addSong = useCallback((name, owner) => {
         const newSongs = [...currentSongs];
-        const ratings = names.reduce((ratings, name) => ({ ...ratings, [name]: 0 }, {}));
+        const ratings = names.reduce((acc, name) => ({ ...acc, [name]: 0 }, {}));
         newSongs.push({
             name,
             owner,
             date: new Date(),
             ratings
         });
+        setCurrentSongs(newSongs);
+        saveSongs({
+            '2020-01-20': { //TODO get actual week
+                'songs': newSongs
+            }
+        }).then(() => {
+            console.log('succesfully saved new songs');
+        })
+            .catch(() => {
+                console.error('Error getting songs, using mocks'); //TODO handle error response
+            });
+    }, [currentSongs, setCurrentSongs]);
+
+    const removeSong = useCallback((index) => {
+        const newSongs = [...currentSongs];
+        newSongs.splice(index, 1);
+        console.log(newSongs);
         setCurrentSongs(newSongs);
         saveSongs({
             '2020-01-20': { //TODO get actual week
@@ -195,7 +212,7 @@ function MusicTable({ classes }) {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {currentSongs.map(song => <MusicRow key={song.name} updateRating={updateRating} song={song}/>)}
+                                {currentSongs.map((song, index) => <MusicRow key={song.name} updateRating={updateRating} removeSong={() => removeSong(index)} song={song}/>)}
                                 <TableRow>
                                     <TableCell>
                                         <Button onClick={() => setAddSongModalOpen(true)}>+</Button>
