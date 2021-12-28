@@ -16,9 +16,12 @@ import { names } from '../constants/userConstants';
 import SortingDropdown from './SortingDropdown';
 import { getSongs, saveSongs } from '../apis/songsAPI';
 import Rainbow from 'rainbowvis.js';
-import { Button, CircularProgress } from '@material-ui/core';
+import { Button, CircularProgress, TextField, Tooltip } from '@material-ui/core';
 import { useCallback } from 'react';
 import AddSongDialog from './AddSongDialog';
+import { getMonday, getUserDate } from '../helpers/TimeHelper';
+import { useNavigate } from 'react-router-dom';
+import { Help } from '@material-ui/icons';
 
 
 const useStyles = () => ({
@@ -53,6 +56,8 @@ function MusicTable({ classes }) {
     const [ isLoading, setIsLoading ] = useState(true);
     const [ currentSongs, setCurrentSongs ] = useState([]);
     const [ addSongModalOpen, setAddSongModalOpen ] = useState(false);
+    const [ today, setToday ] = useState(getMonday(getUserDate()));
+    const navigate = useNavigate();
 
     const generateColors = (songs) => {
         if (songs === undefined || songs.length === 0) {return;}
@@ -181,6 +186,24 @@ function MusicTable({ classes }) {
                 handleClose={() => setAddSongModalOpen(false)}
                 addSong={addSong}
             />
+            <Card>
+                <TextField
+                    type="date"
+                    defaultValue={today}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                    onChange={(event) => {
+                        const monday = getMonday(event.target.value);
+                        navigate(`?date=${monday}`);
+                        setToday(monday);
+                        window.location.reload(false);
+                    }}
+                />
+                <Tooltip title="Date will always be converted to the monday of the given week." placement="top-start">
+                    <Help/>
+                </Tooltip>
+            </Card>
             <Card className={classes.mainCardContainer}>
                 <CardContent>
                     <Typography variant="h2" component="h2">
