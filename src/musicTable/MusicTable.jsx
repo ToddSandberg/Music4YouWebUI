@@ -22,6 +22,7 @@ import AddSongDialog from './AddSongDialog';
 import { getMonday, getUserDate } from '../helpers/TimeHelper';
 import { useNavigate } from 'react-router-dom';
 import { Help } from '@material-ui/icons';
+import { v4 as uuidv4 } from 'uuid';
 
 
 const useStyles = () => ({
@@ -143,7 +144,8 @@ function MusicTable({ classes }) {
             name,
             owner,
             date: new Date(),
-            ratings
+            ratings,
+            id: uuidv4(),
         });
         setCurrentSongs(newSongs);
         saveSongs({
@@ -152,16 +154,14 @@ function MusicTable({ classes }) {
             }
         }).then(() => {
             console.log('succesfully saved new songs');
-        })
-            .catch(() => {
-                console.error('Error getting songs, using mocks'); //TODO handle error response
-            });
+        }).catch(() => {
+            console.error('Error getting songs'); //TODO handle error response
+        });
     }, [currentSongs, setCurrentSongs]);
 
     const removeSong = useCallback((index) => {
         const newSongs = [...currentSongs];
         newSongs.splice(index, 1);
-        console.log(newSongs);
         setCurrentSongs(newSongs);
         saveSongs({
             '2020-01-20': { //TODO get actual week
@@ -169,10 +169,27 @@ function MusicTable({ classes }) {
             }
         }).then(() => {
             console.log('succesfully saved new songs');
-        })
-            .catch(() => {
-                console.error('Error getting songs, using mocks'); //TODO handle error response
-            });
+        }).catch(() => {
+            console.error('Error saving songs'); //TODO handle error response
+        });
+    }, [currentSongs, setCurrentSongs]);
+
+    const changeSong = useCallback((index, variableName, variableValue) => {
+        const newSongs = [...currentSongs];
+        newSongs[index][variableName] = variableValue;
+        setCurrentSongs(newSongs);
+    }, [currentSongs, setCurrentSongs]);
+
+    const saveCurrentSongs = useCallback(() => {
+        saveSongs({
+            '2020-01-20': { //TODO get actual week
+                'songs': currentSongs
+            }
+        }).then(() => {
+            console.log('succesfully saved new songs');
+        }).catch(() => {
+            console.error('Error getting songs, using mocks'); //TODO handle error response
+        });
     }, [currentSongs, setCurrentSongs]);
 
     if (isLoading) {
@@ -235,7 +252,16 @@ function MusicTable({ classes }) {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {currentSongs.map((song, index) => <MusicRow key={song.name} updateRating={updateRating} removeSong={() => removeSong(index)} song={song}/>)}
+                                {currentSongs.map((song, index) => 
+                                    <MusicRow
+                                        key={index}
+                                        updateRating={updateRating}
+                                        removeSong={() => removeSong(index)}
+                                        song={song}
+                                        changeSong={(variableName, variableValue) => changeSong(index, variableName, variableValue)}
+                                        saveCurrentSongs={saveCurrentSongs}
+                                    />
+                                )}
                                 <TableRow>
                                     <TableCell>
                                         <Button onClick={() => setAddSongModalOpen(true)}>+</Button>
