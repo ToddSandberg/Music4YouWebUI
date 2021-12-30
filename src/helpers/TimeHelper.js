@@ -32,9 +32,6 @@ export function subtractDays(date, days) {
 export function getMonday(dateString) {
     const date = getDateFromDateString(dateString);
     const day = date.getDay();
-    console.log(dateString);
-    console.log(date);
-    console.log(day);
     if (day !== 1) {
         if (day === 0) {
             return getDateString(subtractDays(date, 6));

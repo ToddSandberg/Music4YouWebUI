@@ -44,6 +44,9 @@ rainbowGreen.setSpectrum('#FFD666', '#34A853');
 const initializeRainbows = () => {
     const min = ratingsRange.min;
     const max = ratingsRange.max;
+    if (min == max) {
+        return;
+    }
     rainbowRed.setNumberRange(min, (max+min)/2); 
     rainbowGreen.setNumberRange((max+min)/2, max);
 };
@@ -55,6 +58,7 @@ const getColor = (num) => {
 
 function MusicTable({ classes }) {
     const [ isLoading, setIsLoading ] = useState(true);
+    const [ songResponse, setSongResponse ] = useState([]);
     const [ currentSongs, setCurrentSongs ] = useState([]);
     const [ addSongModalOpen, setAddSongModalOpen ] = useState(false);
     const [ today, setToday ] = useState(getMonday(getUserDate()));
@@ -77,12 +81,18 @@ function MusicTable({ classes }) {
 
     useEffect(() => {
         getSongs().then((response) => {
-            const songs = response.data.songs['2020-01-20'].songs;
+            setSongResponse(response.data.songs);
+            const thisWeek = response.data.songs[today];
+            var songs = [];
+            if (response.data.songs[today]) {
+                songs = thisWeek.songs;
+            }
             generateColors(songs);
-            setCurrentSongs(songs); //TODO get actual week
+            setCurrentSongs(songs);
             setIsLoading(false);
         })
-            .catch(() => {
+            .catch((response) => {
+                console.log(response);
                 console.error('Error getting songs, using mocks'); //TODO handle error response
                 const songs = mockSongs['2020-01-20'].songs;
                 generateColors(songs);
@@ -101,8 +111,9 @@ function MusicTable({ classes }) {
             }
         }
         saveSongs({
-            '2020-01-20': { //TODO get actual week
-                'songs': newSongs
+            ...songResponse,
+            [today]: {
+                songs: newSongs
             }
         });
         generateColors(newSongs);
@@ -148,9 +159,11 @@ function MusicTable({ classes }) {
             id: uuidv4(),
         });
         setCurrentSongs(newSongs);
+        console.log(today);
         saveSongs({
-            '2020-01-20': { //TODO get actual week
-                'songs': newSongs
+            ...songResponse,
+            [today]: {
+                songs: newSongs
             }
         }).then(() => {
             console.log('succesfully saved new songs');
@@ -164,8 +177,9 @@ function MusicTable({ classes }) {
         newSongs.splice(index, 1);
         setCurrentSongs(newSongs);
         saveSongs({
-            '2020-01-20': { //TODO get actual week
-                'songs': newSongs
+            ...songResponse,
+            [today]: {
+                songs: newSongs
             }
         }).then(() => {
             console.log('succesfully saved new songs');
@@ -182,8 +196,9 @@ function MusicTable({ classes }) {
 
     const saveCurrentSongs = useCallback(() => {
         saveSongs({
-            '2020-01-20': { //TODO get actual week
-                'songs': currentSongs
+            ...songResponse,
+            [today]: {
+                songs: currentSongs
             }
         }).then(() => {
             console.log('succesfully saved new songs');
