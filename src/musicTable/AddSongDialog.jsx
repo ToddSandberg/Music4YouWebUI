@@ -1,12 +1,13 @@
 import React from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import { useState } from 'react';
 
 
-function AddSongDialog ({ isOpen, handleClose, addSong }) {
+function AddSongDialog ({ isOpen, handleClose, addSong, users }) {
     const [ songName, setSongName ] = useState('');
     const [ userName, setUserName ] = useState('');
 
+    // FormControls are for formatting
     return (
         <Dialog open={isOpen} onClose={handleClose}>
             <DialogTitle>Subscribe</DialogTitle>
@@ -14,20 +15,26 @@ function AddSongDialog ({ isOpen, handleClose, addSong }) {
                 <DialogContentText>
                     Please enter new song information below.
                 </DialogContentText>
-                <TextField
-                    margin="dense"
-                    id="name"
-                    label="Song Name"
-                    value={songName}
-                    onChange={(e) => setSongName(e.target.value)}
-                />
-                <TextField
-                    margin="dense"
-                    id="name"
-                    label="User Name"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
-                />
+                <FormControl fullWidth>
+                    <TextField
+                        id="songname"
+                        label="Song Name"
+                        value={songName}
+                        onChange={(e) => setSongName(e.target.value)}
+                    />
+                </FormControl>
+                <FormControl fullWidth>
+                    <InputLabel id="username-select-label">User Name</InputLabel>
+                    <Select
+                        labelId="username-select-label"
+                        value={userName}
+                        id="username"
+                        label="Username"
+                        onChange={(e) => setUserName(e.target.value)}
+                    >
+                        {users.map((name) => <MenuItem key ={name} value={name}>{name}</MenuItem>)}
+                    </Select>
+                </FormControl>
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>

@@ -217,6 +217,7 @@ function MusicTable({ classes }) {
                 isOpen={addSongModalOpen}
                 handleClose={() => setAddSongModalOpen(false)}
                 addSong={addSong}
+                users={names}
             />
             <Card>
                 <TextField
