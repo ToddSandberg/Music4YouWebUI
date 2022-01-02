@@ -19,7 +19,7 @@ import Rainbow from 'rainbowvis.js';
 import { Button, CircularProgress, TextField, Tooltip } from '@material-ui/core';
 import { useCallback } from 'react';
 import AddSongDialog from './AddSongDialog';
-import { getMonday, getUserDate } from '../helpers/TimeHelper';
+import { getDateFromDateString, getDateString, getMonday, getUserDate, subtractDays } from '../helpers/TimeHelper';
 import { useNavigate } from 'react-router-dom';
 import { Help } from '@material-ui/icons';
 import { v4 as uuidv4 } from 'uuid';
@@ -207,6 +207,19 @@ function MusicTable({ classes }) {
         });
     }, [currentSongs, setCurrentSongs]);
 
+    const kickOffWeek = useCallback(() => {
+        const lastWeek = getDateString(subtractDays(getDateFromDateString(today), 7));
+        console.log(lastWeek);
+        const thisWeek = songResponse[lastWeek];
+        var songs = [];
+        if (thisWeek) {
+            songs = thisWeek.songs;
+        }
+        generateColors(songs);
+        setCurrentSongs(songs);
+        saveCurrentSongs();
+    }, [songResponse, setCurrentSongs, generateColors]);
+
     if (isLoading) {
         return <CircularProgress />;
     }
@@ -219,29 +232,38 @@ function MusicTable({ classes }) {
                 addSong={addSong}
                 users={names}
             />
-            <Card>
-                <TextField
-                    type="date"
-                    defaultValue={today}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    onChange={(event) => {
-                        const monday = getMonday(event.target.value);
-                        navigate(`?date=${monday}`);
-                        setToday(monday);
-                        window.location.reload(false);
-                    }}
-                />
-                <Tooltip title="Date will always be converted to the monday of the given week." placement="top-start">
-                    <Help/>
-                </Tooltip>
-            </Card>
             <Card className={classes.mainCardContainer}>
                 <CardContent>
                     <Typography variant="h2" component="h2">
                     Music For You
                     </Typography>
+                    <div>
+                        <TextField
+                            type="date"
+                            defaultValue={today}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            onChange={(event) => {
+                                const monday = getMonday(event.target.value);
+                                navigate(`?date=${monday}`);
+                                setToday(monday);
+                                window.location.reload(false);
+                            }}
+                        />
+                        <Tooltip title="Date will always be converted to the monday of the given week." placement="top-start">
+                            <Help/>
+                        </Tooltip>
+                        <Button
+                            disabled={currentSongs.length > 0}
+                            onClick={() => kickOffWeek()}
+                        >
+                            Kick Off Week
+                        </Button>
+                        <Tooltip title="Imports songs from previous week. Only available if there are no songs in current week." placement="top-start">
+                            <Help/>
+                        </Tooltip>
+                    </div>
                     <TableContainer>
                         <Table aria-label="simple table">
                             <TableHead>
