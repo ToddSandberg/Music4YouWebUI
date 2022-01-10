@@ -1,58 +1,27 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, TextField, CardActionArea } from '@material-ui/core';
 import { useState } from 'react';
 import { useCallback } from 'react';
 import Member from './Member';
 import { v4 as uuidv4 } from 'uuid';
 import AddIcon from '@material-ui/icons/Add';
-import { saveListConfiguration } from '../apis/ListConfigurationsAPI';
-
-const listConfigurations = {
-    5: {
-        id: 5,
-        name: 'list name',
-        members: [
-            {
-                id: 1,
-                name: 'todd'
-            },
-            {
-                id: 2,
-                name: 'taylor'
-            },
-            {
-                id: 3,
-                name: 'alex',
-            },
-            {
-                id: 4,
-                name: 'sneh',
-            },
-            {
-                id: 5,
-                name: 'grant',
-            },
-            {
-                id: 6,
-                name: 'emma',
-            },
-            {
-                id: 7,
-                name: 'tanner',
-            },
-        ],
-        songsRemovedPerWeek: 3,
-        songsPerPerson: 6,
-    }
-};
+import { getListConfigurations, saveListConfiguration } from '../apis/ListConfigurationsAPI';
 
 function ListConfiguration () {
     const params = new URLSearchParams(window.location.search);
     const id = parseInt(params.get('id'));
     // TODO get configuration
     // TODO save configuration
-    const [ listConfiguration, setListConfiguration ] = useState(listConfigurations[id]);
+    const [ listConfiguration, setListConfiguration ] = useState({});
+
+    useEffect(() => {
+        getListConfigurations(id).then((response) => {
+            setListConfiguration(response.data.listConfiguration);
+        }).catch((error) => {
+            console.error(error);
+        });
+    }, [ id ]);
 
     const deleteMember = useCallback((name) => {
         console.log('TODO Handle delete member' + name);
@@ -82,13 +51,13 @@ function ListConfiguration () {
                 </Card>
                 <h3>Categories</h3>
                 <Card style={{width: '100%', backgroundColor:'grey', overflow:'visible'}}>
-                    {listConfiguration.members.map((member) => 
+                    {listConfiguration.members && listConfiguration.members.map((member) => 
                         <Member
                             key={member.id}
                             member={member}
                             members={listConfiguration.members}
                             deleteMember={deleteMember}
-                            onConfigurationChange={onConfigurationChange}
+                            onConfigurationChange={(newMembers) => onConfigurationChange('members', newMembers)}
                         />
                     )}
                     <Card style={{ width: 250, minHeight: 150, padding: 5, margin: 5, textAlign: 'center', display: 'inline-block'}}>
@@ -116,7 +85,7 @@ function ListConfiguration () {
                 </Card>
                 <Card>
                     <TextField
-                        label="Song removed per person"
+                        label="Songs per person"
                         value={listConfiguration.songsPerPerson}
                         onChange={(event) => onConfigurationChange('songsPerPerson', event.target.value)}
                     />

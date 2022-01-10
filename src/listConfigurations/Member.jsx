@@ -4,6 +4,7 @@ import { Card, IconButton, TextField } from '@material-ui/core';
 import { ColorPicker, createColor } from 'material-ui-color';
 
 export default function Member({ member, members, onConfigurationChange, deleteMember }) {
+    console.log(member);
     const [ stateMember, setStateMember ] = useState(member);
     const [ memberName, setMemberName ] = useState(member.name);
     const [ color, setColor ] = useState(createColor(stateMember.color || '#FFFFFF'));
