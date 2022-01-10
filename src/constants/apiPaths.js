@@ -3,8 +3,8 @@ const APIPaths = {
     getSongs: 'getSongs',
     login: 'login',
     createAccount: 'createAccount',
-    saveListConfigurations: 'saveListConfigurations',
-    getListConfigurations: 'getListConfigurations',
+    saveListConfigurations: 'saveListConfiguration',
+    getListConfigurations: 'getListConfiguration',
 };
 
 export default APIPaths;

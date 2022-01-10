@@ -1,10 +1,10 @@
 import APIPaths from '../constants/apiPaths';
 import APIHelper from './APIHelper';
 
-export function saveListConfigurations(listConfiguration) {
-    return APIHelper.put(APIPaths.saveListConfigurations, listConfiguration);
+export function saveListConfiguration(id, listConfiguration) {
+    return APIHelper.put(APIPaths.saveListConfigurations, { id, listConfiguration });
 }
 
-export function getListConfigurations() {
-    return APIHelper.get(APIPaths.getListConfigurations, {});
+export function getListConfigurations(id) {
+    return APIHelper.put(APIPaths.getListConfigurations, { id });
 }

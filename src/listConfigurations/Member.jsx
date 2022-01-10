@@ -8,10 +8,6 @@ export default function Member({ member, members, onConfigurationChange, deleteM
     const [ memberName, setMemberName ] = useState(member.name);
     const [ color, setColor ] = useState(createColor(stateMember.color || '#FFFFFF'));
 
-    console.log('color');
-    console.log(color);
-    console.log(stateMember);
-
     const handleMemberChange = useCallback((variableName, value) => {
         const newMember = { ...stateMember };
         // TODO check that name does not match another name

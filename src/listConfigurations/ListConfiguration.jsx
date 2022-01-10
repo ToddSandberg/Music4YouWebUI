@@ -6,6 +6,7 @@ import { useCallback } from 'react';
 import Member from './Member';
 import { v4 as uuidv4 } from 'uuid';
 import AddIcon from '@material-ui/icons/Add';
+import { saveListConfiguration } from '../apis/ListConfigurationsAPI';
 
 const listConfigurations = {
     5: {
@@ -61,6 +62,11 @@ function ListConfiguration () {
         const newListConfiguration = { ...listConfiguration };
         newListConfiguration[variableName] = value;
         setListConfiguration(newListConfiguration);
+        saveListConfiguration(id, newListConfiguration).then(() => {
+            console.log('we did it boys');
+        }).catch((error) => {
+            console.error(error);
+        });
     }, [listConfiguration]);
 
     return (
