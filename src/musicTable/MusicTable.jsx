@@ -62,6 +62,9 @@ function MusicTable({ classes }) {
     const [ currentSongs, setCurrentSongs ] = useState([]);
     const [ addSongModalOpen, setAddSongModalOpen ] = useState(false);
     const [ today, setToday ] = useState(getMonday(getUserDate()));
+    const params = new URLSearchParams(window.location.search);
+    const idParam = params.get('id');
+    const [ id ] = useState(idParam || '5');
     const navigate = useNavigate();
 
     const generateColors = (songs) => {
@@ -263,6 +266,11 @@ function MusicTable({ classes }) {
                         <Tooltip title="Imports songs from previous week. Only available if there are no songs in current week." placement="top-start">
                             <Help/>
                         </Tooltip>
+                        <Button
+                            onClick={() => navigate(`/listConfiguration?id=${id}`)}
+                        >
+                            List Configuration
+                        </Button>
                     </div>
                     <TableContainer>
                         <Table aria-label="simple table">

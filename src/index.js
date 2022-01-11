@@ -11,6 +11,7 @@ const Routing = () => {
         <Router>
             <Routes>
                 <Route exact path="/" element={<App />} />
+                <Route exact path="/list" element={<App />} />
                 <Route exact path="/info" element={<InfoPage />}/>
                 <Route exact path="/listConfiguration" element={<ListConfiguration />}/>
             </Routes>

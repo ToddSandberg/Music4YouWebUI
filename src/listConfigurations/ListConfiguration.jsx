@@ -1,19 +1,19 @@
 
 import React, { useEffect } from 'react';
-import { Card, TextField, CardActionArea } from '@material-ui/core';
+import { Card, TextField, CardActionArea, Button } from '@material-ui/core';
 import { useState } from 'react';
 import { useCallback } from 'react';
 import Member from './Member';
 import { v4 as uuidv4 } from 'uuid';
 import AddIcon from '@material-ui/icons/Add';
 import { getListConfigurations, saveListConfiguration } from '../apis/ListConfigurationsAPI';
+import { useNavigate } from 'react-router-dom';
 
 function ListConfiguration () {
     const params = new URLSearchParams(window.location.search);
-    const id = parseInt(params.get('id'));
-    // TODO get configuration
-    // TODO save configuration
+    const id = params.get('id');
     const [ listConfiguration, setListConfiguration ] = useState({});
+    const navigate = useNavigate();
 
     useEffect(() => {
         getListConfigurations(id).then((response) => {
@@ -41,6 +41,11 @@ function ListConfiguration () {
     return (
         <div className="App">
             <header className="App-header">
+                <Button
+                    onClick={() => navigate(`/list?id=${id}`)}
+                >
+                    Go To List
+                </Button>
                 <h3>List Name</h3>
                 <Card>
                     <TextField
