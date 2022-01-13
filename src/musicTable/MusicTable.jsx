@@ -83,16 +83,18 @@ function MusicTable({ classes }) {
     };
 
     useEffect(() => {
-        getSongs().then((response) => {
-            setSongResponse(response.data.songs);
-            const thisWeek = response.data.songs[today];
-            var songs = [];
-            if (response.data.songs[today]) {
-                songs = thisWeek.songs;
+        getSongs(id).then((response) => {
+            if(response.data.songs) {
+                setSongResponse(response.data.songs);
+                const thisWeek = response.data.songs[today];
+                var songs = [];
+                if (response.data.songs[today]) {
+                    songs = thisWeek.songs;
+                }
+                generateColors(songs);
+                setCurrentSongs(songs);
+                setIsLoading(false);
             }
-            generateColors(songs);
-            setCurrentSongs(songs);
-            setIsLoading(false);
         })
             .catch((response) => {
                 console.log(response);
@@ -102,7 +104,7 @@ function MusicTable({ classes }) {
                 setCurrentSongs(songs); //TODO get actual week
                 setIsLoading(false);
             });
-    }, []);
+    }, [id]);
 
     const updateRating = useCallback((songName, songRater, value) => {
         let newSongs = [...currentSongs];
@@ -113,7 +115,7 @@ function MusicTable({ classes }) {
                 break;
             }
         }
-        saveSongs({
+        saveSongs(id, {
             ...songResponse,
             [today]: {
                 songs: newSongs
@@ -163,7 +165,7 @@ function MusicTable({ classes }) {
         });
         setCurrentSongs(newSongs);
         console.log(today);
-        saveSongs({
+        saveSongs(id, {
             ...songResponse,
             [today]: {
                 songs: newSongs
@@ -173,13 +175,13 @@ function MusicTable({ classes }) {
         }).catch(() => {
             console.error('Error getting songs'); //TODO handle error response
         });
-    }, [currentSongs, setCurrentSongs]);
+    }, [currentSongs, setCurrentSongs, id]);
 
     const removeSong = useCallback((index) => {
         const newSongs = [...currentSongs];
         newSongs.splice(index, 1);
         setCurrentSongs(newSongs);
-        saveSongs({
+        saveSongs(id, {
             ...songResponse,
             [today]: {
                 songs: newSongs
@@ -189,7 +191,7 @@ function MusicTable({ classes }) {
         }).catch(() => {
             console.error('Error saving songs'); //TODO handle error response
         });
-    }, [currentSongs, setCurrentSongs]);
+    }, [currentSongs, setCurrentSongs, id]);
 
     const changeSong = useCallback((index, variableName, variableValue) => {
         const newSongs = [...currentSongs];
@@ -198,7 +200,7 @@ function MusicTable({ classes }) {
     }, [currentSongs, setCurrentSongs]);
 
     const saveCurrentSongs = useCallback(() => {
-        saveSongs({
+        saveSongs(id, {
             ...songResponse,
             [today]: {
                 songs: currentSongs
