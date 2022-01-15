@@ -17,6 +17,7 @@ function ListConfiguration () {
 
     useEffect(() => {
         getListConfigurations(id).then((response) => {
+            console.log(response.data);
             setListConfiguration(response.data.listConfiguration);
         }).catch((error) => {
             console.error(error);
@@ -50,11 +51,11 @@ function ListConfiguration () {
                 <Card>
                     <TextField
                         label="List Name"
-                        value={listConfiguration.name}
+                        value={listConfiguration.name || ''}
                         onChange={(event) => onConfigurationChange('name', event.target.value)}
                     />
                 </Card>
-                <h3>Categories</h3>
+                <h3>List Members</h3>
                 <Card style={{width: '100%', backgroundColor:'grey', overflow:'visible'}}>
                     {listConfiguration.members && listConfiguration.members.map((member) => 
                         <Member

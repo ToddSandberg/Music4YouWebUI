@@ -32,7 +32,7 @@ function AddSongDialog ({ isOpen, handleClose, addSong, users }) {
                         label="Username"
                         onChange={(e) => setUserName(e.target.value)}
                     >
-                        {users.map((name) => <MenuItem key ={name} value={name}>{name}</MenuItem>)}
+                        {users.map((user) => <MenuItem key={user.id} value={user.name}>{user.name}</MenuItem>)}
                     </Select>
                 </FormControl>
             </DialogContent>

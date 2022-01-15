@@ -10,9 +10,6 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import { withStyles } from '@material-ui/core/styles';
 import MusicRow from './MusicRow';
-import { mockSongs } from '../mocks/songs';
-import { peopleColors } from '../constants/colorConstants';
-import { names } from '../constants/userConstants';
 import SortingDropdown from './SortingDropdown';
 import { getSongs, saveSongs } from '../apis/songsAPI';
 import Rainbow from 'rainbowvis.js';
@@ -23,6 +20,7 @@ import { getDateFromDateString, getDateString, getMonday, getUserDate, subtractD
 import { useNavigate } from 'react-router-dom';
 import { Help } from '@material-ui/icons';
 import { v4 as uuidv4 } from 'uuid';
+import { getListConfigurations } from '../apis/ListConfigurationsAPI';
 
 
 const useStyles = () => ({
@@ -55,16 +53,18 @@ const getColor = (num) => {
     return num <= (ratingsRange.max+ratingsRange.min)/2 ? rainbowRed.colourAt(num) : rainbowGreen.colourAt(num);
 };
 
-
 function MusicTable({ classes }) {
     const [ isLoading, setIsLoading ] = useState(true);
     const [ songResponse, setSongResponse ] = useState([]);
     const [ currentSongs, setCurrentSongs ] = useState([]);
+    const [ listConfiguration, setListConfiguration ] = useState({});
+    const [ members, setMembers ] = useState([]);
+    const [ peopleColors, setPeopleColors ] = useState({});
     const [ addSongModalOpen, setAddSongModalOpen ] = useState(false);
     const [ today, setToday ] = useState(getMonday(getUserDate()));
     const params = new URLSearchParams(window.location.search);
     const idParam = params.get('id');
-    const [ id ] = useState(idParam || '5');
+    const [ id ] = useState(idParam);
     const navigate = useNavigate();
 
     const generateColors = (songs) => {
@@ -83,6 +83,10 @@ function MusicTable({ classes }) {
     };
 
     useEffect(() => {
+        if (!id) {
+            navigate('/info');
+        }
+
         getSongs(id).then((response) => {
             if(response.data.songs) {
                 setSongResponse(response.data.songs);
@@ -94,16 +98,29 @@ function MusicTable({ classes }) {
                 generateColors(songs);
                 setCurrentSongs(songs);
                 setIsLoading(false);
+            } else {
+                setCurrentSongs([]);
+                setIsLoading(false);
             }
         })
             .catch((response) => {
                 console.log(response);
                 console.error('Error getting songs, using mocks'); //TODO handle error response
-                const songs = mockSongs['2020-01-20'].songs;
-                generateColors(songs);
-                setCurrentSongs(songs); //TODO get actual week
+                setCurrentSongs([]);
                 setIsLoading(false);
             });
+
+        getListConfigurations(id).then((response) => {
+            const newpeopleColors = [...response.data.listConfiguration.members].reduce((obj, member) => {
+                obj[member.name] = member.color;
+                return obj;
+            }, {});
+            setPeopleColors(newpeopleColors);
+            setMembers([ ...response.data.listConfiguration.members ]);
+            setListConfiguration(response.data.listConfiguration);
+        }).catch((error) => {
+            console.error(error);
+        });
     }, [id]);
 
     const updateRating = useCallback((songName, songRater, value) => {
@@ -155,7 +172,10 @@ function MusicTable({ classes }) {
 
     const addSong = useCallback((name, owner) => {
         const newSongs = [...currentSongs];
-        const ratings = names.reduce((acc, name) => ({ ...acc, [name]: 0 }, {}));
+        const ratings = [ ...members ].map((member) => member.name).reduce((acc, name) => {
+            acc[name] = 0;
+            return acc;
+        }, {});
         newSongs.push({
             name,
             owner,
@@ -175,7 +195,7 @@ function MusicTable({ classes }) {
         }).catch(() => {
             console.error('Error getting songs'); //TODO handle error response
         });
-    }, [currentSongs, setCurrentSongs, id]);
+    }, [currentSongs, setCurrentSongs, id, members]);
 
     const removeSong = useCallback((index) => {
         const newSongs = [...currentSongs];
@@ -235,12 +255,12 @@ function MusicTable({ classes }) {
                 isOpen={addSongModalOpen}
                 handleClose={() => setAddSongModalOpen(false)}
                 addSong={addSong}
-                users={names}
+                users={members}
             />
             <Card className={classes.mainCardContainer}>
                 <CardContent>
                     <Typography variant="h2" component="h2">
-                    Music For You
+                        {listConfiguration.name}
                     </Typography>
                     <div>
                         <TextField
@@ -278,16 +298,21 @@ function MusicTable({ classes }) {
                         <Table aria-label="simple table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell><span className={classes.cellHeaderContainer}><span className={classes.cellHeaderText}>Songs</span><SortingDropdown sortSongs={sortSongs} owner={null}/></span></TableCell>
-                                    {names.map(name => 
+                                    <TableCell>
+                                        <span className={classes.cellHeaderContainer}>
+                                            <span className={classes.cellHeaderText}>Songs</span>
+                                            <SortingDropdown sortSongs={sortSongs} owner={null}/>
+                                        </span>
+                                    </TableCell>
+                                    {members.map(member => 
                                         <TableCell 
-                                            key={name}
+                                            key={member.id}
                                             component="th"
-                                            style={{backgroundColor:peopleColors[name.toLowerCase()]}}
+                                            style={{backgroundColor:peopleColors[member.name]}}
                                         >
                                             <span className={classes.cellHeaderContainer}>
-                                                <span className={classes.cellHeaderText}>{name}</span>
-                                                <SortingDropdown sortSongs={sortSongs} owner={name.toLowerCase()}/>
+                                                <span className={classes.cellHeaderText}>{member.name}</span>
+                                                <SortingDropdown sortSongs={sortSongs} owner={member.name}/>
                                             </span>
                                         </TableCell>
                                     )}
@@ -308,6 +333,7 @@ function MusicTable({ classes }) {
                                         song={song}
                                         changeSong={(variableName, variableValue) => changeSong(index, variableName, variableValue)}
                                         saveCurrentSongs={saveCurrentSongs}
+                                        members={members}
                                     />
                                 )}
                                 <TableRow>
