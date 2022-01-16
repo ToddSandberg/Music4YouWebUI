@@ -9,13 +9,3 @@ export const ratingColors = {
     1.5: '#E78266',
     1.0: '#E06666'
 };
-
-export const peopleColors = {
-    'todd': '#93c47d',
-    'taylor': '#69cfff',
-    'alex': '#ff0000',
-    'sneh': '#9900ff',
-    'grant': '#ffff00',
-    'emma': '#ff77ba',
-    'tanner': '#fc35e2',
-};

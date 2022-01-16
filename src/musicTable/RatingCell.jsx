@@ -1,9 +1,9 @@
 import React from 'react';
 import TableCell from '@material-ui/core/TableCell';
 import TextField from '@material-ui/core/TextField';
-import { peopleColors, ratingColors } from '../constants/colorConstants';
+import { ratingColors } from '../constants/colorConstants';
 
-function RatingCell({ score, owner, updateRating, songName }) {
+function RatingCell({ score, owner, updateRating, songName, peopleColors }) {
     const color = score ? ratingColors[parseFloat(score)] : peopleColors[owner];
 
     const setScore = (value)=> {
