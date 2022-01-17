@@ -31,7 +31,7 @@ export default function Member({ member, members, onConfigurationChange, deleteM
         </IconButton>
         <TextField
             name="name"
-            label="Category Name"
+            label="Member Name"
             value={memberName || ''}
             onChange={(event) => handleMemberChange('name', event.target.value)}
         />

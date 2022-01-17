@@ -24,8 +24,15 @@ function ListConfiguration () {
         });
     }, [ id ]);
 
-    const deleteMember = useCallback((name) => {
-        console.log('TODO Handle delete member' + name);
+    const deleteMember = useCallback((memberid) => {
+        const newListConfiguration = { ...listConfiguration };
+        newListConfiguration.members = newListConfiguration.members.filter((member) => member.id !== memberid);
+        setListConfiguration(newListConfiguration);
+        saveListConfiguration(id, newListConfiguration).then(() => {
+            console.log('we did it boys');
+        }).catch((error) => {
+            console.error(error);
+        });
     }, [listConfiguration]);
 
     const onConfigurationChange = useCallback((variableName, value) => {
@@ -57,12 +64,12 @@ function ListConfiguration () {
                 </Card>
                 <h3>List Members</h3>
                 <Card style={{width: '100%', backgroundColor:'grey', overflow:'visible'}}>
-                    {listConfiguration.members && listConfiguration.members.map((member) => 
+                    {listConfiguration.members && listConfiguration.members.map((member, index) => 
                         <Member
-                            key={member.id}
+                            key={member.id + '' + index}
                             member={member}
                             members={listConfiguration.members}
-                            deleteMember={deleteMember}
+                            deleteMember={() => deleteMember(member.id)}
                             onConfigurationChange={(newMembers) => onConfigurationChange('members', newMembers)}
                         />
                     )}
