@@ -6,6 +6,7 @@ import { ColorPicker, createColor } from 'material-ui-color';
 export default function Member({ member, members, onConfigurationChange, deleteMember }) {
     const [ stateMember, setStateMember ] = useState(member);
     const [ memberName, setMemberName ] = useState(member.name);
+    const [ userName, setUserName ] = useState(member.username);
     const [ color, setColor ] = useState(createColor(stateMember.color || '#FFFFFF'));
 
     const handleMemberChange = useCallback((variableName, value) => {
@@ -18,6 +19,7 @@ export default function Member({ member, members, onConfigurationChange, deleteM
             newMember
         ];
         setMemberName(newMember.name);
+        setUserName(newMember.username);
         setStateMember(newMember);
         onConfigurationChange(newMembers);
     }, [member, members, onConfigurationChange, setColor]);
@@ -34,6 +36,13 @@ export default function Member({ member, members, onConfigurationChange, deleteM
             label="Member Name"
             value={memberName || ''}
             onChange={(event) => handleMemberChange('name', event.target.value)}
+        />
+        <br/>
+        <TextField
+            name="username"
+            label="Member Username"
+            value={userName || ''}
+            onChange={(event) => handleMemberChange('username', event.target.value)}
         />
         <br/>
         <ColorPicker

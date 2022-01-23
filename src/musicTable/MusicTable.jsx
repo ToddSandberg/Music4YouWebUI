@@ -53,12 +53,24 @@ const getColor = (num) => {
     return num <= (ratingsRange.max+ratingsRange.min)/2 ? rainbowRed.colourAt(num) : rainbowGreen.colourAt(num);
 };
 
-function MusicTable({ classes }) {
+const groupSongsByOwner = (songs) => {
+    return songs.reduce((acc, song) => {
+        if (acc[song.owner]) {
+            acc[song.owner] = [ ...acc[song.owner], song ];
+        } else {
+            acc[song.owner] = [ song ];
+        }
+        return acc;
+    }, {});
+};
+
+function MusicTable({ classes, username }) {
     const [ isLoading, setIsLoading ] = useState(true);
     const [ songResponse, setSongResponse ] = useState([]);
     const [ currentSongs, setCurrentSongs ] = useState([]);
     const [ listConfiguration, setListConfiguration ] = useState({});
     const [ members, setMembers ] = useState([]);
+    const [ currentMember, setCurrentMember ] = useState({});
     const [ peopleColors, setPeopleColors ] = useState({});
     const [ addSongModalOpen, setAddSongModalOpen ] = useState(false);
     const [ today, setToday ] = useState(getMonday(getUserDate()));
@@ -117,6 +129,9 @@ function MusicTable({ classes }) {
             }, {});
             setPeopleColors(newpeopleColors);
             setMembers([ ...response.data.listConfiguration.members ]);
+            const newCurrentMember = response.data.listConfiguration.members
+                .filter((member) => member.username === username)[0]; //TODO prevent from more than one member per username
+            setCurrentMember(newCurrentMember);
             setListConfiguration(response.data.listConfiguration);
         }).catch((error) => {
             console.error(error);
@@ -234,11 +249,29 @@ function MusicTable({ classes }) {
 
     const kickOffWeek = useCallback(() => {
         const lastWeek = getDateString(subtractDays(getDateFromDateString(today), 7));
-        console.log(lastWeek);
-        const thisWeek = songResponse[lastWeek];
+        const lastWeekSongs = songResponse[lastWeek];
+        const thisWeek = [];
+        const songsToRemove = listConfiguration.songsRemovedPerWeek;
+        // group by user
+        const grouped = groupSongsByOwner(lastWeekSongs.songs);
+        Object.values(grouped).forEach(groupedSongs => {
+            const factor = -1;
+            // sort by rating
+            groupedSongs.sort((a,b)=> {
+                if (a['score'] > b['score']) {return factor * 1;}
+                if (a['score'] < b['score']) {return factor * -1;}
+                return 0;
+            });
+            // remove songs and add to this week
+            for (let songNum=0; songNum < groupedSongs.length - songsToRemove; songNum++) {
+                console.log(groupedSongs[songNum]);
+                thisWeek.push(groupedSongs[songNum]);
+            }
+        });
+        
         var songs = [];
         if (thisWeek) {
-            songs = thisWeek.songs;
+            songs = thisWeek;
         }
         generateColors(songs);
         setCurrentSongs(songs);
@@ -271,7 +304,7 @@ function MusicTable({ classes }) {
                             }}
                             onChange={(event) => {
                                 const monday = getMonday(event.target.value);
-                                navigate(`?date=${monday}`);
+                                navigate(`?id=${id}&date=${monday}`);
                                 setToday(monday);
                                 window.location.reload(false);
                             }}
@@ -338,7 +371,14 @@ function MusicTable({ classes }) {
                                 )}
                                 <TableRow>
                                     <TableCell>
-                                        <Button onClick={() => setAddSongModalOpen(true)}>+</Button>
+                                        <Button
+                                            disabled={currentMember.name
+                                                            && groupSongsByOwner(currentSongs)[currentMember.name]
+                                                            && groupSongsByOwner(currentSongs)[currentMember.name].length >= listConfiguration.songsPerPerson}
+                                            onClick={() => setAddSongModalOpen(true)}
+                                        >
+                                            +
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             </TableBody>

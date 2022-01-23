@@ -35,7 +35,7 @@ function App() {
                 <p>
                   poggers poggers
                 </p>
-                <MusicTable/>
+                <MusicTable username={username}/>
             </header>
         </div>
     );
