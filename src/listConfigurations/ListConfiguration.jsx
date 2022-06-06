@@ -1,6 +1,6 @@
 
 import React, { useEffect } from 'react';
-import { Card, TextField, CardActionArea, Button } from '@material-ui/core';
+import { Card, TextField, CardActionArea, Button, Chip } from '@material-ui/core';
 import { useState } from 'react';
 import { useCallback } from 'react';
 import Member from './Member';
@@ -13,6 +13,7 @@ function ListConfiguration () {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
     const [ listConfiguration, setListConfiguration ] = useState({});
+    const [ currentAdmin, setCurrentAdmin ] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -103,6 +104,30 @@ function ListConfiguration () {
                         onChange={(event) => onConfigurationChange('songsPerPerson', event.target.value)}
                     />
                 </Card>
+                <h3>Admin List</h3>
+                <Card>
+                    <form onSubmit={(event) => {
+                        event.preventDefault();
+                        const admins = listConfiguration.admins || [];
+                        admins.push(currentAdmin);
+                        onConfigurationChange('admins', admins);
+                        setCurrentAdmin('');
+                    }}>
+                        <TextField
+                            label="Admin List"
+                            value={currentAdmin}
+                            onChange={(event) => {
+                                setCurrentAdmin(event.target.value);
+                            }}
+                        />
+                    </form>
+                </Card>
+                {listConfiguration.admins &&
+                    listConfiguration.admins.map((admin) => <Chip key={admin} label={admin} onDelete={() => {
+                        const admins = listConfiguration.admins || [];
+                        admins.splice(admins.indexOf(admin), 1);
+                        onConfigurationChange('admins', admins);
+                    }} />)}
             </header>
         </div>
     );

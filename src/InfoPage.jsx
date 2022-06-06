@@ -24,10 +24,12 @@ export default class InfoPage extends React.Component {
     }
 
     createNewList() {
+        const { username } = this.state;
         const id = uuidv4();
 
         saveListConfiguration(id, {
-            id
+            id,
+            owner: username
         }).then(() => {
             window.location.href = `listConfiguration/?id=${id}`;
         }).catch((error) => {
