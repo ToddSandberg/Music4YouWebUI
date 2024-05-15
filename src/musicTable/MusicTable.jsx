@@ -372,7 +372,7 @@ function MusicTable({ classes, username }) {
                                 <TableRow>
                                     <TableCell>
                                         <Button
-                                            disabled={currentMember.name
+                                            disabled={currentMember && currentMember.name
                                                             && groupSongsByOwner(currentSongs)[currentMember.name]
                                                             && groupSongsByOwner(currentSongs)[currentMember.name].length >= listConfiguration.songsPerPerson}
                                             onClick={() => setAddSongModalOpen(true)}
