@@ -1,8 +1,7 @@
 import React from 'react';
-import { Box, Button, Card, TextField } from '@material-ui/core';
+import { Alert, Box, Button, Card, TextField } from '@mui/material';
 import { useState } from 'react';
 import { useCallback } from 'react';
-import { Alert } from '@material-ui/lab';
 import { useNavigate } from 'react-router-dom';
 import { createAccount } from '../apis/LoginAPI';
 

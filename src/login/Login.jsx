@@ -1,5 +1,4 @@
-import { Card, Box, Button, TextField } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import { Card, Box, Button, TextField, Alert } from '@mui/material';
 import { login } from '../apis/LoginAPI';
 import React from 'react';
 import { useCallback } from 'react';

@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { Card, IconButton, TextField } from '@material-ui/core';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Card, IconButton, TextField } from '@mui/material';
 import { ColorPicker, createColor } from 'material-ui-color';
 
 export default function Member({ member, members, onConfigurationChange, deleteMember }) {
@@ -25,32 +25,32 @@ export default function Member({ member, members, onConfigurationChange, deleteM
     }, [member, members, onConfigurationChange, setColor]);
 
     console.log('rerender');
-    return <Card style={{width:300, minHeight:150, padding:5, margin:5, backgroundColor:stateMember.color, display: 'inline-block', overflow:'visible', verticalAlign: 'top'}}>
-        <IconButton 
-            onClick={() => deleteMember()}
-        >
-            <DeleteIcon/>
-        </IconButton>
-        <TextField
-            name="name"
-            label="Member Name"
-            value={memberName || ''}
-            onChange={(event) => handleMemberChange('name', event.target.value)}
-        />
-        <br/>
-        <TextField
-            name="username"
-            label="Member Username"
-            value={userName || ''}
-            onChange={(event) => handleMemberChange('username', event.target.value)}
-        />
-        <br/>
-        <ColorPicker
-            value={color}
-            onChange={(value) => {
-                setColor(value);
-                handleMemberChange('color', '#' + value.hex);
-            }}
-        />
-    </Card>;
+    return (
+        <Card style={{width:300, minHeight:150, padding:5, margin:5, backgroundColor:stateMember.color, display: 'inline-block', overflow:'visible', verticalAlign: 'top'}}>
+            <IconButton onClick={() => deleteMember()} size="large">
+                <DeleteIcon/>
+            </IconButton>
+            <TextField
+                name="name"
+                label="Member Name"
+                value={memberName || ''}
+                onChange={(event) => handleMemberChange('name', event.target.value)}
+            />
+            <br/>
+            <TextField
+                name="username"
+                label="Member Username"
+                value={userName || ''}
+                onChange={(event) => handleMemberChange('username', event.target.value)}
+            />
+            <br/>
+            <ColorPicker
+                value={color}
+                onChange={(value) => {
+                    setColor(value);
+                    handleMemberChange('color', '#' + value.hex);
+                }}
+            />
+        </Card>
+    );
 }

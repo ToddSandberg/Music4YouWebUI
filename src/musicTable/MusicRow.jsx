@@ -1,10 +1,10 @@
 
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
 import React from 'react';
 import RatingCell from './RatingCell';
-import { IconButton, TextField } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { IconButton, TextField } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 function MusicRow ({ song, updateRating, removeSong, changeSong, saveCurrentSongs, members }) {
@@ -40,9 +40,7 @@ function MusicRow ({ song, updateRating, removeSong, changeSong, saveCurrentSong
             )}
             <TableCell key={song.name + '-rating'} style={{backgroundColor: '#' + song.color}}>{song.score}</TableCell>
             <TableCell>
-                <IconButton 
-                    onClick={() => removeSong()}
-                >
+                <IconButton onClick={() => removeSong()} size="large">
                     <DeleteIcon/>
                 </IconButton>
             </TableCell>

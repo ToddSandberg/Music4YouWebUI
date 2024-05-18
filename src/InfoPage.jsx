@@ -1,9 +1,8 @@
 import React from 'react';
-import Alert from '@material-ui/lab/Alert';
 import './App.css';
 import CreateAccount from './createaccount/CreateAccount';
 import Login from './login/Login';
-import { Button } from '@material-ui/core';
+import { Alert, Button } from '@mui/material';
 import { saveListConfiguration } from './apis/ListConfigurationsAPI';
 import { v4 as uuidv4 } from 'uuid';
 

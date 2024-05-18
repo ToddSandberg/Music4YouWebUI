@@ -1,11 +1,11 @@
 
 import React, { useEffect } from 'react';
-import { Card, TextField, CardActionArea, Button, Chip } from '@material-ui/core';
+import { Card, TextField, CardActionArea, Button, Chip } from '@mui/material';
 import { useState } from 'react';
 import { useCallback } from 'react';
 import Member from './Member';
 import { v4 as uuidv4 } from 'uuid';
-import AddIcon from '@material-ui/icons/Add';
+import AddIcon from '@mui/icons-material/Add';
 import { getListConfigurations, saveListConfiguration } from '../apis/ListConfigurationsAPI';
 import { useNavigate } from 'react-router-dom';
 
