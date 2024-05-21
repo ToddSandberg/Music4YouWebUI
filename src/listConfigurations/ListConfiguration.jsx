@@ -122,8 +122,7 @@ function ListConfiguration () {
                         />
                     </form>
                 </Card>
-                {listConfiguration.admins &&
-                    listConfiguration.admins.map((admin) => <Chip key={admin} label={admin} onDelete={() => {
+                {listConfiguration.admins?.map((admin) => <Chip key={admin} label={admin} onDelete={() => {
                         const admins = listConfiguration.admins || [];
                         admins.splice(admins.indexOf(admin), 1);
                         onConfigurationChange('admins', admins);

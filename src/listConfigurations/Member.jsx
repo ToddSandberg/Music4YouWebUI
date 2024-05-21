@@ -1,13 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Card, IconButton, TextField } from '@mui/material';
-import { ColorPicker, createColor } from 'material-ui-color';
 
 export default function Member({ member, members, onConfigurationChange, deleteMember }) {
     const [ stateMember, setStateMember ] = useState(member);
     const [ memberName, setMemberName ] = useState(member.name);
     const [ userName, setUserName ] = useState(member.username);
-    const [ color, setColor ] = useState(createColor(stateMember.color || '#FFFFFF'));
+    const [ color, setColor ] = useState(stateMember.color || '#FFFFFF');
 
     const handleMemberChange = useCallback((variableName, value) => {
         const newMember = { ...stateMember };
@@ -44,11 +43,11 @@ export default function Member({ member, members, onConfigurationChange, deleteM
                 onChange={(event) => handleMemberChange('username', event.target.value)}
             />
             <br/>
-            <ColorPicker
+            <MuiColorInput
                 value={color}
                 onChange={(value) => {
                     setColor(value);
-                    handleMemberChange('color', '#' + value.hex);
+                    handleMemberChange('color', `#${value.hex}`);
                 }}
             />
         </Card>

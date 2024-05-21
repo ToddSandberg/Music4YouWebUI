@@ -38,7 +38,7 @@ function MusicRow ({ song, updateRating, removeSong, changeSong, saveCurrentSong
                     peopleColors={peopleColors}
                 />
             )}
-            <TableCell key={song.name + '-rating'} style={{backgroundColor: '#' + song.color}}>{song.score}</TableCell>
+            <TableCell key={`${song.name}-rating`} style={{backgroundColor: `#${song.color}`}}>{song.score}</TableCell>
             <TableCell>
                 <IconButton onClick={() => removeSong()} size="large">
                     <DeleteIcon/>

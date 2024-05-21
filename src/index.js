@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import './index.css';
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import App from './App';
@@ -7,14 +6,15 @@ import InfoPage from './InfoPage';
 import ListConfiguration from './listConfigurations/ListConfiguration';
 import { makeStyles } from '@mui/styles';
 import { ThemeProvider, StyledEngineProvider, createTheme } from '@mui/material/styles';
+import { createRoot } from 'react-dom/client';
 
 const theme = createTheme();
 
-const useStyles = makeStyles((theme) => {
+/*const useStyles = makeStyles((theme) => {
     root: {
       // some CSS that accesses the theme
     }
-  });
+  });*/
 
 const Routing = () => {
     return (
@@ -33,9 +33,8 @@ const Routing = () => {
     );
 };
 
-ReactDOM.render(
-    <React.StrictMode>
-        <Routing />
-    </React.StrictMode>,
-    document.getElementById('root')
-);
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(<React.StrictMode>
+    <Routing />
+</React.StrictMode>);

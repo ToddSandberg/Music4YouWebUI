@@ -2,14 +2,14 @@ export function getDateString(date: Date) {
     const dd = String(date.getDate()).padStart(2, '0');
     const mm = String(date.getMonth() + 1).padStart(2, '0'); //January is 0!
     const yyyy = date.getFullYear();
-    return yyyy + '-' + mm + '-' + dd;
+    return `${yyyy}-${mm}-${dd}`;
 }
 
 export function getDateFromDateString(dateString: string) {
-    var parts = dateString.split('-');
+    const parts = dateString.split('-');
     // Please pay attention to the month (parts[1]); JavaScript counts months from 0:
     // January - 0, February - 1, etc.
-    return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2])); 
+    return new Date(Number.parseInt(parts[0]), Number.parseInt(parts[1]) - 1, Number.parseInt(parts[2])); 
 }
 
 export function getCurrentDate() {
@@ -35,9 +35,8 @@ export function getMonday(dateString: string) {
     if (day !== 1) {
         if (day === 0) {
             return getDateString(subtractDays(date, 6));
-        } else {
-            return getDateString(subtractDays(date, day - 1));
         }
+        return getDateString(subtractDays(date, day - 1));
     }
     
     return dateString;

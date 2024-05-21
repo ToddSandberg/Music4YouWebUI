@@ -5,7 +5,8 @@ const instance = axios.create({
     responseType: 'json'
 });
 
-function put(endpoint, data) {
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+function put(endpoint: string, data: any) {
     return instance({
         method: 'put',
         url: endpoint,
@@ -13,7 +14,8 @@ function put(endpoint, data) {
     });
 }
 
-function get(endpoint, data) {
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+function get(endpoint: string, data: any) {
     return instance({
         method: 'get',
         url: endpoint,

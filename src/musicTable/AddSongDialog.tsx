@@ -1,9 +1,15 @@
 import React from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { useState } from 'react';
+import type { User } from 'models/models';
 
-
-function AddSongDialog ({ isOpen, handleClose, addSong, users }) {
+type Props = {
+    isOpen: boolean,
+    handleClose: () => void,
+    addSong: (songName: string, userName: string) => void,
+    users: User[]
+}
+function AddSongDialog ({ isOpen, handleClose, addSong, users }: Props) {
     const [ songName, setSongName ] = useState('');
     const [ userName, setUserName ] = useState('');
 
@@ -24,7 +30,7 @@ function AddSongDialog ({ isOpen, handleClose, addSong, users }) {
                     />
                 </FormControl>
                 <FormControl fullWidth>
-                    <InputLabel id="username-select-label">User Name</InputLabel>
+                    <InputLabel id="username-select-label">Usnpm run buildnpmer Name</InputLabel>
                     <Select
                         labelId="username-select-label"
                         value={userName}

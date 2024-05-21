@@ -4,7 +4,7 @@ import { Dropdown } from 'react-bootstrap';
 function SortingDropdown({ sortSongs, owner }) {
     return(
         <Dropdown>
-            <Dropdown.Toggle variant="secondary" style={{backgroundColor: 'inherit', color: 'inherit', border: 'none', padding: '0px 6px'}} id="dropdown-basic"></Dropdown.Toggle>
+            <Dropdown.Toggle variant="secondary" style={{backgroundColor: 'inherit', color: 'inherit', border: 'none', padding: '0px 6px'}} id="dropdown-basic" />
 
             {owner === null ? 
                 <Dropdown.Menu align="right">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -31,9 +31,10 @@ const useStyles = () => ({
 });
 
 function sumRatings(ratings) {
-    return Object.values(ratings).reduce((a, b) => isNaN(parseFloat(b)) ? 0 + a: parseFloat(b) + a, 0);
+    return Object.values(ratings).reduce((a, b) => 
+        Number.isNaN(Number.parseFloat(b)) ? 0 + a: Number.parseFloat(b) + a, 0);
 }
-let ratingsRange = {'min': undefined, 'max': undefined};
+const ratingsRange = {min: undefined, max: undefined};
 const rainbowRed = new Rainbow();
 const rainbowGreen = new Rainbow();
 rainbowRed.setSpectrum('#E06666', '#FFD666');
@@ -42,7 +43,7 @@ rainbowGreen.setSpectrum('#FFD666', '#34A853');
 const initializeRainbows = () => {
     const min = ratingsRange.min;
     const max = ratingsRange.max;
-    if (min == max) {
+    if (min === max) {
         return;
     }
     rainbowRed.setNumberRange(min, (max+min)/2); 
@@ -83,14 +84,14 @@ function MusicTable({ classes, username }) {
         if (songs === undefined || songs.length === 0) {return;}
         ratingsRange.max = undefined;
         ratingsRange.min = undefined;
-        for (let song of songs) {
-            song['score'] = sumRatings(song.ratings);
+        for (const song of songs) {
+            song.score = sumRatings(song.ratings);
             if (ratingsRange.max === undefined || song.score > ratingsRange.max) {ratingsRange.max = song.score;}
             if (ratingsRange.min === undefined || song.score < ratingsRange.min) {ratingsRange.min = song.score;}
         }
         initializeRainbows();
-        for (let song of songs) {
-            song['color'] = getColor(song.score);
+        for (const song of songs) {
+            song.color = getColor(song.score);
         }
     };
 
@@ -103,7 +104,7 @@ function MusicTable({ classes, username }) {
             if(response.data.songs) {
                 setSongResponse(response.data.songs);
                 const thisWeek = response.data.songs[today];
-                var songs = [];
+                let songs = [];
                 if (response.data.songs[today]) {
                     songs = thisWeek.songs;
                 }
@@ -139,11 +140,11 @@ function MusicTable({ classes, username }) {
     }, [id]);
 
     const updateRating = useCallback((songName, songRater, value) => {
-        let newSongs = [...currentSongs];
-        for (let song of newSongs) {
+        const newSongs = [...currentSongs];
+        for (const song of newSongs) {
             if (song.name===songName) {
-                song['ratings'][songRater] = value;
-                song['score'] = sumRatings(song['ratings']);
+                song.ratings[songRater] = value;
+                song.score = sumRatings(song.ratings);
                 break;
             }
         }
@@ -158,7 +159,7 @@ function MusicTable({ classes, username }) {
     }, [generateColors, setCurrentSongs, currentSongs, sumRatings, saveSongs]);
 
     const sortSongs = useCallback(({ type, factor, field })=> {
-        let newSongs = [...currentSongs];
+        const newSongs = [...currentSongs];
         if (!type.includes('numerical')) {
             newSongs.sort((a,b)=> {
                 if (a[field] > b[field]) {return factor * 1;}
@@ -169,15 +170,15 @@ function MusicTable({ classes, username }) {
         else {
             if (field === 'total') {
                 newSongs.sort((a,b)=> {
-                    if (a['score'] > b['score']) {return factor * 1;}
-                    if (a['score'] < b['score']) {return factor * -1;}
+                    if (a.score > b.score) {return factor * 1;}
+                    if (a.score < b.score) {return factor * -1;}
                     return 0;
                 });
             }
             else {
                 newSongs.sort((a,b)=> {
-                    if (a['ratings'][field] > b['ratings'][field]) {return factor * 1;}
-                    if (a['ratings'][field] < b['ratings'][field]) {return factor * -1;}
+                    if (a.ratings[field] > b.ratings[field]) {return factor * 1;}
+                    if (a.ratings[field] < b.ratings[field]) {return factor * -1;}
                     return 0;
                 });
             }
@@ -258,8 +259,8 @@ function MusicTable({ classes, username }) {
             const factor = -1;
             // sort by rating
             groupedSongs.sort((a,b)=> {
-                if (a['score'] > b['score']) {return factor * 1;}
-                if (a['score'] < b['score']) {return factor * -1;}
+                if (a.score > b.score) {return factor * 1;}
+                if (a.score < b.score) {return factor * -1;}
                 return 0;
             });
             // remove songs and add to this week
@@ -269,7 +270,7 @@ function MusicTable({ classes, username }) {
             }
         });
         
-        var songs = [];
+        let songs = [];
         if (thisWeek) {
             songs = thisWeek;
         }

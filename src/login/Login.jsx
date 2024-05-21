@@ -1,6 +1,5 @@
 import { Card, Box, Button, TextField, Alert } from '@mui/material';
 import { login } from '../apis/LoginAPI';
-import React from 'react';
 import { useCallback } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +16,7 @@ export default function Login({ updateHasAccount }) {
             password
         };
         login(creds).then((response) => {
-            if (response && response.data) {
+            if (response?.data) {
                 console.log(response);
                 console.log('logged in!');
                 localStorage.setItem('username', username);

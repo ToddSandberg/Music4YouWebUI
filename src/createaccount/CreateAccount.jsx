@@ -18,7 +18,7 @@ export default function CreateAccount({ updateHasAccount }) {
             password
         };
         createAccount(creds).then((response) => {
-            if (response && response.data) {
+            if (response?.data) {
                 console.log(response);
                 console.log('account created!');
                 localStorage.setItem('username', username);
@@ -30,7 +30,7 @@ export default function CreateAccount({ updateHasAccount }) {
             }
         }).catch((error) => {
             console.error('Error logging in.');
-            if (error.response && error.response.data && error.response.data.message) {
+            if (error.response?.data?.message) {
                 setError(error.response.data.message);
             } else {
                 setError('An unknown error ocurred while creating account. Please try again in a few minutes.');
