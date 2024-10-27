@@ -30,7 +30,7 @@ function AddSongDialog ({ isOpen, handleClose, addSong, users }: Props) {
                     />
                 </FormControl>
                 <FormControl fullWidth>
-                    <InputLabel id="username-select-label">Usnpm run buildnpmer Name</InputLabel>
+                    <InputLabel id="username-select-label">User Name</InputLabel>
                     <Select
                         labelId="username-select-label"
                         value={userName}
