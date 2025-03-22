@@ -8,7 +8,6 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import { withStyles } from '@mui/styles';
 import MusicRow from './MusicRow';
 import SortingDropdown from './SortingDropdown';
 import { getSongs, saveSongs } from '../apis/songsAPI';
@@ -21,14 +20,6 @@ import { useNavigate } from 'react-router-dom';
 import { Help } from '@mui/icons-material';
 import { v4 as uuidv4 } from 'uuid';
 import { getListConfigurations } from '../apis/ListConfigurationsAPI';
-
-
-const useStyles = () => ({
-    mainCardContainer: {width: '75%'},
-    cellHeaderContainer: {display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'},
-    cellHeaderText: {marginRight: '20px'},
-    cellCustom: {padding: '6px'},
-});
 
 function sumRatings(ratings) {
     return Object.values(ratings).reduce((a, b) => 
@@ -291,7 +282,7 @@ function MusicTable({ classes, username }) {
                 addSong={addSong}
                 users={members}
             />
-            <Card className={classes.mainCardContainer}>
+            <Card style={{width: '75%'}}>
                 <CardContent>
                     <Typography variant="h2" component="h2">
                         {listConfiguration.name}
@@ -333,8 +324,8 @@ function MusicTable({ classes, username }) {
                             <TableHead>
                                 <TableRow>
                                     <TableCell>
-                                        <span className={classes.cellHeaderContainer}>
-                                            <span className={classes.cellHeaderText}>Songs</span>
+                                        <span style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                            <span style={{marginRight: '20px'}}>Songs</span>
                                             <SortingDropdown sortSongs={sortSongs} owner={null}/>
                                         </span>
                                     </TableCell>
@@ -344,15 +335,15 @@ function MusicTable({ classes, username }) {
                                             component="th"
                                             style={{backgroundColor:peopleColors[member.name]}}
                                         >
-                                            <span className={classes.cellHeaderContainer}>
-                                                <span className={classes.cellHeaderText}>{member.name}</span>
+                                            <span style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                                <span style={{marginRight: '20px'}}>{member.name}</span>
                                                 <SortingDropdown sortSongs={sortSongs} owner={member.name}/>
                                             </span>
                                         </TableCell>
                                     )}
                                     <TableCell style={{backgroundColor: '#fbbc04'}}>
-                                        <span className={classes.cellHeaderContainer}>
-                                            <span className={classes.cellHeaderText}>Total</span>
+                                        <span style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                            <span style={{marginRight: '20px'}}>Total</span>
                                             <SortingDropdown sortSongs={sortSongs} owner={'total'}/>
                                         </span>
                                     </TableCell>
@@ -391,4 +382,4 @@ function MusicTable({ classes, username }) {
     );
 }
 
-export default withStyles(useStyles)(MusicTable);
+export default MusicTable;

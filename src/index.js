@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import App from './App';
 import InfoPage from './InfoPage';
 import ListConfiguration from './listConfigurations/ListConfiguration';
-import { makeStyles } from '@mui/styles';
 import { ThemeProvider, StyledEngineProvider, createTheme } from '@mui/material/styles';
 import { createRoot } from 'react-dom/client';
 
