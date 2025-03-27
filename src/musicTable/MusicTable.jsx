@@ -352,7 +352,7 @@ function MusicTable({ classes, username }) {
                             <TableBody>
                                 {currentSongs.map((song, index) => 
                                     <MusicRow
-                                        key={index}
+                                        key={`musicRow-${index}`} 
                                         updateRating={updateRating}
                                         removeSong={() => removeSong(index)}
                                         song={song}
@@ -364,7 +364,7 @@ function MusicTable({ classes, username }) {
                                 <TableRow>
                                     <TableCell>
                                         <Button
-                                            disabled={currentMember && currentMember.name
+                                            disabled={currentMember?.name
                                                             && groupSongsByOwner(currentSongs)[currentMember.name]
                                                             && groupSongsByOwner(currentSongs)[currentMember.name].length >= listConfiguration.songsPerPerson}
                                             onClick={() => setAddSongModalOpen(true)}

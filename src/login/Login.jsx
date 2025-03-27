@@ -30,7 +30,7 @@ export default function Login({ updateHasAccount }) {
             console.error(error);
             setError('An unknown error ocurred while logging in. Please try again in a few minutes.');
         });
-    }, [username, password]);
+    }, [username, password, navigate]);
 
     return (<Card style={{width:300, minHeight:150, padding:5, margin:5, display: 'inline-block', overflow:'visible', verticalAlign: 'top'}}>
         Login here
